@@ -29,7 +29,9 @@ public class GameScreen extends Screen {
 	private Image characterImg, boardImg, characterImage;
 
 	int livesLeft = 1;
-	Paint paint, paint2;
+	Paint paint, paint2, paint3;
+	
+	boolean touchDown = false;
 
 	public GameScreen(Game game) {
 		super(game);
@@ -55,6 +57,12 @@ public class GameScreen extends Screen {
 		paint2.setTextAlign(Paint.Align.CENTER);
 		paint2.setAntiAlias(true);
 		paint2.setColor(Color.WHITE);
+		
+		paint3 = new Paint();
+		paint3.setTextSize(30);
+		paint3.setTextAlign(Paint.Align.LEFT);
+		paint3.setAntiAlias(true);
+		paint3.setColor(Color.BLACK);
 
 	}
 
@@ -101,16 +109,18 @@ public class GameScreen extends Screen {
 			{
 				if (inBounds(event, character.getX(), character.getY(), 76, 76)) {
 					character.update(event);
+					touchDown = true;
 				}
 			}
 			else if (event.type == TouchEvent.TOUCH_DRAGGED) {
-				if (inBounds(event, character.getX(), character.getY(), 76, 76)) {
+				if (touchDown) {
 					character.update(event);
 				}
 			}
 			else if (event.type == TouchEvent.TOUCH_UP) {
 				if (inBounds(event, character.getX(), character.getY(), 76, 76)) {
 					character.update(event);
+					touchDown = false;
 				}
 			}
 
@@ -214,6 +224,12 @@ public class GameScreen extends Screen {
 		}
 		
 		g.drawImage(Assets.characterImg, character.getX(), character.getY());
+		g.drawString("xStart: " + Integer.toString(character.getxStart()), 500, 100, paint3);
+		g.drawString("yStart: " + Integer.toString(character.getyStart()), 500, 150, paint3);
+		g.drawString("xMovedDis: " + Integer.toString(character.getxMovedDis()), 500, 200, paint3);
+		g.drawString("yMovedDis: " + Integer.toString(character.getyMovedDis()), 500, 250, paint3);
+		g.drawString("xEnd: " + Integer.toString(character.getxEnd()), 500, 300, paint3);
+		g.drawString("yEnd: " + Integer.toString(character.getyEnd()), 500, 350, paint3);
 
 		// Example:
 		// g.drawImage(Assets.background, 0, 0);
