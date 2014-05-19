@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.example.android_game_battleboard;
+package com.battleBoard.battleBoardGame;
 
 public final class R {
     public static final class attr {
