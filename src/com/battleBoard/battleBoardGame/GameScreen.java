@@ -18,7 +18,7 @@ public class GameScreen extends Screen {
 		Ready, Running, Paused, GameOver
 	}
 
-	GameState state = GameState.Ready;
+	GameState state = GameState.Ready;//===============
 
 	// Variable Setup
 
@@ -236,6 +236,7 @@ public class GameScreen extends Screen {
 		// g.drawImage(Assets.character, characterX, characterY);
 
 		// Secondly, draw the UI above the game elements.
+		
 		if (state == GameState.Ready)
 			drawReadyUI();
 		if (state == GameState.Running)
