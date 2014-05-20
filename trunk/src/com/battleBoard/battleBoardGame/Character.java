@@ -75,8 +75,8 @@ public class Character extends Sprite
 				{
 					this.y = yStart - 38;
 				}
-				xEnd = this.x;
-				yEnd = this.y;
+				xEnd = this.x + 38;
+				yEnd = this.y + 38;
 				xMovedDis = 0;
 				yMovedDis = 0;
 			}

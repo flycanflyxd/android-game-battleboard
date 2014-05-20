@@ -2,14 +2,24 @@ package com.battleBoard.battleBoardGame;
 
 import java.util.List;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
-import com.battleBoard.framework.Screen;
 import com.battleBoard.framework.Input.TouchEvent;
+import com.battleBoard.framework.Screen;
 
 public class MainMenuScreen extends Screen {
+	Paint paint;
+	
 	public MainMenuScreen(Game game) {
 		super(game);
+		paint = new Paint();
+		paint.setTextSize(70);
+		paint.setTextAlign(Paint.Align.LEFT);
+		paint.setAntiAlias(true);
+		paint.setColor(Color.RED);
 	}
 
 	@Override
@@ -22,14 +32,14 @@ public class MainMenuScreen extends Screen {
 			TouchEvent event = touchEvents.get(i);
 			if (event.type == TouchEvent.TOUCH_UP) {
 
-				if (inBounds(event, 50, 350, 250, 450)) {
+				if (inBounds(event, 50, 330, 350, 70)) {
 					game.setScreen(new GameScreen(game));
 				}
 
 			}
 		}
 	}
-
+	
 	private boolean inBounds(TouchEvent event, int x, int y, int width,
 			int height) {
 		if (event.x > x && event.x < x + width - 1 && event.y > y
@@ -43,6 +53,7 @@ public class MainMenuScreen extends Screen {
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
 		g.drawImage(Assets.menuImg, 0, 0);
+		g.drawString("START", 50, 400, paint);
 	}
 
 	@Override
