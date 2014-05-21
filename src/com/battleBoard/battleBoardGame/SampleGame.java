@@ -21,9 +21,7 @@ public class SampleGame extends AndroidGame {
 			Assets.load(this);
 			firstTimeCreate = false;
 		}
-
 		return new SplashLoadingScreen(this);
-
 	}
 
 	@Override
@@ -36,15 +34,11 @@ public class SampleGame extends AndroidGame {
 		super.onResume();
 
 		Assets.theme.play();
-
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		Assets.theme.pause();
-
 	}
-	
-	
 }
