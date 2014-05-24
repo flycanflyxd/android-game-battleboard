@@ -1,21 +1,19 @@
 package com.battleBoard.battleBoardGame;
 
-import java.util.List;
-
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
-import com.battleBoard.framework.Input.TouchEvent;
 import com.battleBoard.framework.Screen;
 
 public class GameScreen extends Screen {
 	enum GameState {
-		Running
+		battling
 	}
 
-	private GameState state = GameState.Running;
+	private GameState state = GameState.battling;
 	private Character character;
 	private Board board;
 	private Paint textPaint;
@@ -36,46 +34,38 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void update(float deltaTime) {
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
-		if (state == GameState.Running) {
-			updateRunning(touchEvents, deltaTime);
-		}
 	}
-
-	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
+	
+	@Override
+	public void onTouchEvent(MotionEvent event) {
 		final int cWidth = Assets.characterImg.getWidth();
 		final int cHeight = Assets.characterImg.getHeight();
-		int len = touchEvents.size();
-		for (int i = 0; i < len; i++) {
-			TouchEvent event = touchEvents.get(i);
-			
-			if(event.type == TouchEvent.TOUCH_DOWN)
-			{
-				if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
-					character.update(event);
-					touchDown = true;
-				}
+		
+		if(event.getAction() == MotionEvent.ACTION_DOWN)
+		{
+			if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
+				character.update(event);
+				touchDown = true;
 			}
-			else if (event.type == TouchEvent.TOUCH_DRAGGED) {
-				if (touchDown) {
-					character.update(event);
-				}
+		}
+		else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+			if (touchDown) {
+				character.update(event);
 			}
-			else if (event.type == TouchEvent.TOUCH_UP) {
-				if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
-					character.update(event);
-					touchDown = false;
-				}
+		}
+		else if (event.getAction() == MotionEvent.ACTION_UP) {
+			if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
+				character.update(event);
+				touchDown = false;
 			}
-
 		}
 	}
 
-	private boolean inBounds(TouchEvent event, int x, int y, int width,
+	private boolean inBounds(MotionEvent event, int x, int y, int width,
 			int height) {
-		if (event.x > x && event.x < x + width - 1 && event.y > y
-				&& event.y < y + height - 1)
+		if (event.getX() > x && event.getX() < x + width - 1 && event.getY() > y
+				&& event.getY() < y + height - 1)
 			return true;
 		else
 			return false;

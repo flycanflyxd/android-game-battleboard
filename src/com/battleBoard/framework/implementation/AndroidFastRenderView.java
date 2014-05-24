@@ -1,12 +1,16 @@
 package com.battleBoard.framework.implementation;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class AndroidFastRenderView extends SurfaceView implements Runnable {
+@SuppressLint("ViewConstructor")
+public class AndroidFastRenderView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
     AndroidGame game;
     Bitmap framebuffer;
     Thread renderThread = null;
@@ -18,9 +22,8 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
         this.game = game;
         this.framebuffer = framebuffer;
         this.holder = getHolder();
-
     }
-
+    
     public void resume() { 
         running = true;
         renderThread = new Thread(this);
@@ -69,7 +72,24 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
             }
             
         }
-    }     
+    }
     
-  
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+    	game.getCurrentScreen().onTouchEvent(motionEvent);
+    	return true;
+    }
+
+	@Override
+	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder arg0) {
+		holder.addCallback(this);
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder arg0) {	
+	} 
 }

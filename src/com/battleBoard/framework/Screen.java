@@ -1,5 +1,7 @@
 package com.battleBoard.framework;
 
+import android.view.MotionEvent;
+
 public abstract class Screen {
     protected final Game game;
 
@@ -18,4 +20,6 @@ public abstract class Screen {
     public abstract void dispose();
     
 	public abstract void backButton();
+	
+	public abstract void onTouchEvent(MotionEvent motionEvent);
 }

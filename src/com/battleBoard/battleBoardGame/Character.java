@@ -1,6 +1,7 @@
 package com.battleBoard.battleBoardGame;
 
-import com.battleBoard.framework.Input.TouchEvent;
+import android.view.MotionEvent;
+
 
 public class Character extends Sprite {
 	private int xStart = 0;
@@ -21,15 +22,15 @@ public class Character extends Sprite {
 		super(x, y);
 	}
 
-	public void update(TouchEvent event) {
-		if (event.type == TouchEvent.TOUCH_DOWN) {
+	public void update(MotionEvent event) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			xStart = this.x + halfBlock;
 			yStart = this.y + halfBlock;
 			xMovedDis = 0;
 			yMovedDis = 0;
-		} else if (event.type == TouchEvent.TOUCH_DRAGGED) {
-			xMovedDis = (event.x - xStart);
-			yMovedDis = (event.y - yStart);
+		} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+			xMovedDis = ((int)event.getX() - xStart);
+			yMovedDis = ((int)event.getY() - yStart);
 			this.x = xStart + xMovedDis - halfBlock;
 			this.y = yStart + yMovedDis - halfBlock;
 			if (illegalMoving()) {
@@ -38,7 +39,7 @@ public class Character extends Sprite {
 				xMovedDis = 0;
 				yMovedDis = 0;
 			}
-		} else if (event.type == TouchEvent.TOUCH_UP) {
+		} else if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (xMovedDis != 0 || yMovedDis != 0) {
 				this.x = xStart - halfBlock;
 				this.y = yStart - halfBlock;

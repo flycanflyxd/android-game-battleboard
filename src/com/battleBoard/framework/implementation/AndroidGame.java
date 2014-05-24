@@ -6,7 +6,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -38,9 +37,6 @@ public abstract class AndroidGame extends Activity implements Game {
         screenRect = new Rect();
         screenRect.right = display.widthPixels;
         screenRect.bottom = display.heightPixels;
-        
-        Log.d("width", String.valueOf(screenRect.right));
-        Log.d("height", String.valueOf(screenRect.bottom));
 
         Bitmap frameBuffer = Bitmap.createBitmap(screenRect.width(),
         		screenRect.height(), Config.RGB_565);
@@ -49,7 +45,6 @@ public abstract class AndroidGame extends Activity implements Game {
         graphics = new Graphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
-        input = new AndroidInput(this, renderView, 1.0f, 1.0f);
         screen = getInitScreen();
         setContentView(renderView);
     }

@@ -1,5 +1,7 @@
 package com.battleBoard.battleBoardGame;
 
+import android.view.MotionEvent;
+
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
@@ -35,5 +37,11 @@ public class SplashLoadingScreen extends Screen {
 
 	@Override
 	public void backButton() {
+	}
+
+	@Override
+	public void onTouchEvent(MotionEvent motionEvent) {
+		// TODO Auto-generated method stub
+		
 	}
 }
