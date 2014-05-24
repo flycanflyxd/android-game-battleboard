@@ -13,14 +13,12 @@ import com.battleBoard.framework.Audio;
 import com.battleBoard.framework.FileIO;
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
-import com.battleBoard.framework.Input;
 import com.battleBoard.framework.Screen;
 
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;
     Graphics graphics;
     Audio audio;
-    Input input;
     FileIO fileIO;
     Screen screen;
     private Rect screenRect = new Rect();
@@ -65,12 +63,7 @@ public abstract class AndroidGame extends Activity implements Game {
         if (isFinishing())
             screen.dispose();
     }
-
-    @Override
-    public Input getInput() {
-        return input;
-    }
-
+    
     @Override
     public FileIO getFileIO() {
         return fileIO;
@@ -102,6 +95,7 @@ public abstract class AndroidGame extends Activity implements Game {
     	return screen;
     }
     
+    @Override
     public Rect getScreenRect() {
     	return screenRect;
     }

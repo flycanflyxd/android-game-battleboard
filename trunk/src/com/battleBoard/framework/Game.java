@@ -1,10 +1,10 @@
 package com.battleBoard.framework;
 
+import android.graphics.Rect;
+
 public interface Game {
 
     public Audio getAudio();
-
-    public Input getInput();
 
     public FileIO getFileIO();
 
@@ -15,4 +15,6 @@ public interface Game {
     public Screen getCurrentScreen();
 
     public Screen getInitScreen();
+    
+    public Rect getScreenRect();
 }
