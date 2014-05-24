@@ -10,6 +10,9 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+import com.battleBoard.battleBoardGame.Units.AnotherUnit;
+import com.battleBoard.battleBoardGame.Units.SomeUnit;
+import com.battleBoard.battleBoardGame.Units.Unit;
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
@@ -20,24 +23,22 @@ public class GameScreen extends Screen {
 	}
 	
 	private BattleState state = BattleState.normal;
-	private Board board;
-	private Paint textPaint;
-	private Point boardSize = new Point(5, 5);
+	private Board board = new Board();
+	private Paint textPaint = new Paint();
+	private final Point boardSize = new Point(5, 5);
 	private final int screenWidth;
 	private final int screenHeight;
 	private final float blockWidth;
 	private final float startY;
 	
-	private Player user = null;
+	private Player user = new Player();
+	private Player enemy = new Player();
 	private Unit draggingUnit = null;
-	private ArrayList<ValidMove> validMoves; 	
+	private ArrayList<ValidMove> validMoves = new ArrayList<ValidMove>();
 
 	public GameScreen(Game game) {
 		super(game);
-		
-		board = new Board();
 
-		textPaint = new Paint();
 		textPaint.setTextSize(30);
 		textPaint.setTextAlign(Paint.Align.LEFT);
 		textPaint.setAntiAlias(true);
@@ -48,13 +49,14 @@ public class GameScreen extends Screen {
 		blockWidth = (float)screenWidth / (float)boardSize.x;
 		startY = screenHeight * 0.5f - blockWidth * 2.5f;
 		
-		user = new Player();
-		user.addUnit(new SomeUnit(Assets.characterImg, 0, 0));
-		user.addUnit(new SomeUnit(Assets.characterImg, 1, 1));
-		user.addUnit(new SomeUnit(Assets.characterImg, 1, 2));
-		user.addUnit(new SomeUnit(Assets.characterImg, 0, 2));
+		user.addUnit(new SomeUnit(0, 0));
+		user.addUnit(new SomeUnit(1, 1));
+		user.addUnit(new SomeUnit(1, 2));
+		user.addUnit(new SomeUnit(0, 2));
 		
-		validMoves = new ArrayList<ValidMove>();
+		enemy.addUnit(new AnotherUnit(4, 4));
+		enemy.addUnit(new AnotherUnit(4, 3));
+		enemy.addUnit(new AnotherUnit(4, 2));
 	}
 
 	@Override
@@ -82,6 +84,14 @@ public class GameScreen extends Screen {
 								}
 							}
 							if(!collide) {
+								for(Unit whichNearUnit : enemy.getUnits()) {
+									if(whichMove.equals(whichNearUnit.getBlockPosition())) {
+										collide = true;
+										break;
+									}
+								}
+							}
+							if(!collide) {
 								validMoves.add(new ValidMove(Assets.magic, whichMove.x, whichMove.y));
 							}
 						}
@@ -94,10 +104,10 @@ public class GameScreen extends Screen {
 		}
 		else if(state == BattleState.draggingUnit) {
 			if(event.getAction() == MotionEvent.ACTION_UP) {
-				boolean collide = false;
-				for(Unit whichUnit : user.getUnits()) {
-					if(whichUnit != draggingUnit && whichUnit.getBlockPosition().equals(blockPosition)) {
-						collide = true;
+				boolean collide = true;
+				for(ValidMove whichMove : validMoves) {
+					if(whichMove.getBlockPosition().equals(blockPosition)) {
+						collide = false;
 						break;
 					}
 				}
@@ -151,6 +161,16 @@ public class GameScreen extends Screen {
 				PointF p = blockToScreenPosition(whichUnit.getBlockPosition());
 				matrix.postTranslate(p.x, p.y);
 			}
+			graphics.drawBitmap(whichUnit.getImage(), matrix, null);
+		}
+		
+		for(Unit whichUnit : enemy.getUnits()) {
+			matrix.reset();
+			matrix.setScale(blockWidth / whichUnit.getImage().getWidth(), blockWidth / whichUnit.getImage().getHeight());
+			
+			PointF p = blockToScreenPosition(whichUnit.getBlockPosition());
+			matrix.postTranslate(p.x, p.y);
+			
 			graphics.drawBitmap(whichUnit.getImage(), matrix, null);
 		}
 	}
