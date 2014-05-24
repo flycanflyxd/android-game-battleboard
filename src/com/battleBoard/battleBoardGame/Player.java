@@ -2,6 +2,8 @@ package com.battleBoard.battleBoardGame;
 
 import java.util.ArrayList;
 
+import com.battleBoard.battleBoardGame.Units.Unit;
+
 public class Player {
 	private ArrayList<Unit> units;
 	

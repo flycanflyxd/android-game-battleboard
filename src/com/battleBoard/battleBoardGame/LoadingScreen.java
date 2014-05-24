@@ -21,6 +21,7 @@ public class LoadingScreen extends Screen {
 		Assets.characterImg = g.newImage("character.png", ImageFormat.ARGB4444);
 		Assets.blockImg = g.newImage("block.png", ImageFormat.ARGB4444);
 		Assets.magic = g.newImage("magic.png", ImageFormat.ARGB4444);
+		Assets.unit1 = g.newImage("unit1.png", ImageFormat.ARGB4444);
 		game.setScreen(new MainMenuScreen(game));
 
 	}

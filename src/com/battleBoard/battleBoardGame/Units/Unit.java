@@ -1,6 +1,8 @@
-package com.battleBoard.battleBoardGame;
+package com.battleBoard.battleBoardGame.Units;
 
 import java.util.ArrayList;
+
+import com.battleBoard.battleBoardGame.Sprite;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -8,13 +10,11 @@ import android.graphics.PointF;
 
 public abstract class Unit extends Sprite {
 	private PointF screenPosition = new PointF(0.0f, 0.0f);
-	private Bitmap image;
-	protected ArrayList<Point> validMoveDirections;
+	protected Bitmap image = null;
+	protected ArrayList<Point> validMoveDirections = new ArrayList<Point>();
 	
-	public Unit(Bitmap image, int x, int y) {
+	public Unit(int x, int y) {
 		super(x, y);
-		this.image = image;
-		validMoveDirections = new ArrayList<Point>();
 	}
 
 	public PointF getScreenPosition() {
