@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 
 import android.util.Log;*/
 
+import com.battleBoard.battleBoardGame.Screens.SplashLoadingScreen;
 import com.battleBoard.framework.Screen;
 import com.battleBoard.framework.implementation.AndroidGame;
 

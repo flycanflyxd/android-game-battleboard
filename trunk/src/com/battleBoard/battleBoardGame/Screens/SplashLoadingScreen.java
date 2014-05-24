@@ -1,7 +1,8 @@
-package com.battleBoard.battleBoardGame;
+package com.battleBoard.battleBoardGame.Screens;
 
 import android.view.MotionEvent;
 
+import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;

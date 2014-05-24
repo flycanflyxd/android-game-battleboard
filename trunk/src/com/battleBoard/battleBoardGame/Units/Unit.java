@@ -12,6 +12,7 @@ public abstract class Unit extends Sprite {
 	private PointF screenPosition = new PointF(0.0f, 0.0f);
 	protected Bitmap image = null;
 	protected ArrayList<Point> validMoveDirections = new ArrayList<Point>();
+	protected float hp = 0.0f;
 	
 	public Unit(int x, int y) {
 		super(x, y);

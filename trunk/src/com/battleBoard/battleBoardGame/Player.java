@@ -1,11 +1,12 @@
 package com.battleBoard.battleBoardGame;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.battleBoard.battleBoardGame.Units.Unit;
 
 public class Player {
-	private ArrayList<Unit> units;
+	private ArrayList<Unit> units = null;
 	
 	public Player() {
 		units = new ArrayList<Unit>();
@@ -15,7 +16,7 @@ public class Player {
 		units.add(unit);
 	}
 	
-	public ArrayList<Unit> getUnits() {
+	public List<Unit> getUnits() {
 		return units;
 	}
 }
