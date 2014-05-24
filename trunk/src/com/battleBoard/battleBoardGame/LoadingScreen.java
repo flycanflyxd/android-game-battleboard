@@ -1,5 +1,7 @@
 package com.battleBoard.battleBoardGame;
 
+import android.view.MotionEvent;
+
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Graphics.ImageFormat;
@@ -51,5 +53,9 @@ public class LoadingScreen extends Screen {
 	@Override
 	public void backButton() {
 
+	}
+
+	@Override
+	public void onTouchEvent(MotionEvent motionEvent) {
 	}
 }

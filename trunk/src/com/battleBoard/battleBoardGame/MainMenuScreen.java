@@ -1,13 +1,11 @@
 package com.battleBoard.battleBoardGame;
 
-import java.util.List;
-
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
-import com.battleBoard.framework.Input.TouchEvent;
 import com.battleBoard.framework.Screen;
 
 public class MainMenuScreen extends Screen {
@@ -24,25 +22,23 @@ public class MainMenuScreen extends Screen {
 
 	@Override
 	public void update(float deltaTime) {
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	}
+	
+	@Override
+	public void onTouchEvent(MotionEvent event) {
+		if (event.getAction() == MotionEvent.ACTION_UP) {
 
-		int len = touchEvents.size();
-		for (int i = 0; i < len; i++) {
-			TouchEvent event = touchEvents.get(i);
-			if (event.type == TouchEvent.TOUCH_UP) {
-
-				if (inBounds(event, 50, 330, 350, 70)) {
-					game.setScreen(new GameScreen(game));
-				}
-
+			if (inBounds(event, 50, 330, 350, 70)) {
+				game.setScreen(new GameScreen(game));
 			}
+
 		}
 	}
 	
-	private boolean inBounds(TouchEvent event, int x, int y, int width,
+	private boolean inBounds(MotionEvent event, int x, int y, int width,
 			int height) {
-		if (event.x > x && event.x < x + width - 1 && event.y > y
-				&& event.y < y + height - 1)
+		if (event.getX() > x && event.getX() < x + width - 1 && event.getY() > y
+				&& event.getY() < y + height - 1)
 			return true;
 		else
 			return false;
@@ -73,5 +69,5 @@ public class MainMenuScreen extends Screen {
 	public void backButton() {
         android.os.Process.killProcess(android.os.Process.myPid());
 
-	}
+	}	
 }
