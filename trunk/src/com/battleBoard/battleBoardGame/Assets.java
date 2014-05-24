@@ -1,10 +1,10 @@
 package com.battleBoard.battleBoardGame;
 
-import com.battleBoard.framework.Image;
+import android.graphics.Bitmap;
 import com.battleBoard.framework.Music;
 
 public class Assets {	
-	public static Image menuImg, splashImg, backgroundImg, characterImg, blockImg;
+	public static Bitmap menuImg, splashImg, backgroundImg, characterImg, blockImg;
 
 	public static Music theme;
 	

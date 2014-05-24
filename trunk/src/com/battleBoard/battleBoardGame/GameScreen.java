@@ -85,15 +85,15 @@ public class GameScreen extends Screen {
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
 
-		g.drawBackground(Assets.backgroundImg.getBitmap());
+		g.drawBackground(Assets.backgroundImg);
 
 		for(int i = 0; i < board.getRowSize(); ++i) {
 			for(int j = 0; j < board.getColSize(); ++j) {
-				g.drawBitmap(Assets.blockImg.getBitmap(), board.getBlock(i, j).getX(), board.getBlock(i, j).getY(), null);
+				g.drawBitmap(Assets.blockImg, board.getBlock(i, j).getX(), board.getBlock(i, j).getY(), null);
 			}
 		}
 		
-		g.drawBitmap(Assets.characterImg.getBitmap(), character.getX(), character.getY(), null);
+		g.drawBitmap(Assets.characterImg, character.getX(), character.getY(), null);
 		g.drawText("xStart: " + Integer.toString(character.getxStart()), 500, 100, textPaint);
 		g.drawText("yStart: " + Integer.toString(character.getyStart()), 500, 150, textPaint);
 		g.drawText("xMovedDis: " + Integer.toString(character.getxMovedDis()), 500, 200, textPaint);

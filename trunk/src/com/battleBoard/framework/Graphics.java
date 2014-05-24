@@ -14,7 +14,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.battleBoard.framework.Graphics;
-import com.battleBoard.framework.implementation.AndroidImage;
 
 public class Graphics extends Canvas{
 	public static enum ImageFormat {
@@ -33,7 +32,7 @@ public class Graphics extends Canvas{
         this.paint = new Paint();
     }
 
-    public Image newImage(String fileName, ImageFormat format) {
+    public Bitmap newImage(String fileName, ImageFormat format) {
         Config config = null;
         if (format == ImageFormat.RGB565)
             config = Config.RGB_565;
@@ -73,7 +72,7 @@ public class Graphics extends Canvas{
         else
             format = ImageFormat.ARGB8888;
 
-        return new AndroidImage(bitmap, format);
+        return bitmap;
     }
 
     public void clearScreen(int color) {
