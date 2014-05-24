@@ -72,31 +72,10 @@ public class GameScreen extends Screen {
 		if(state == BattleState.normal) {
 			for(Unit whichUnit : user.getUnits()) {
 				if(blockPosition.equals(whichUnit.getBlockPosition()) && event.getAction() == MotionEvent.ACTION_DOWN) {
+					screenPosition.x -= blockWidth * 0.5;
+					screenPosition.y -= blockWidth * 0.5;
 					whichUnit.setScreenPosition(screenPosition);
-					draggingUnit = whichUnit;
-					for(Point whichMove : draggingUnit.getValidMoves()) {
-						if(ValidBlockPosition(whichMove)) {
-							boolean collide = false;
-							for(Unit whichNearUnit : user.getUnits()) {
-								if(whichMove.equals(whichNearUnit.getBlockPosition())) {
-									collide = true;
-									break;
-								}
-							}
-							if(!collide) {
-								for(Unit whichNearUnit : enemy.getUnits()) {
-									if(whichMove.equals(whichNearUnit.getBlockPosition())) {
-										collide = true;
-										break;
-									}
-								}
-							}
-							if(!collide) {
-								validMoves.add(new ValidMove(Assets.magic, whichMove.x, whichMove.y));
-							}
-						}
-					}
-					
+					generateValidMoves(whichUnit);				
 					state = BattleState.draggingUnit;
 					break;
 				}
@@ -150,7 +129,40 @@ public class GameScreen extends Screen {
 			graphics.drawBitmap(whichValidMove.getImage(), matrix, null);
 		}
 		
-		for(Unit whichUnit : user.getUnits()) {
+		drawPlayerUnits(user);
+		drawPlayerUnits(enemy);
+	}
+	
+	private void generateValidMoves(Unit whichUnit) {
+		draggingUnit = whichUnit;
+		for(Point whichMove : draggingUnit.getValidMoves()) {
+			if(ValidBlockPosition(whichMove)) {
+				boolean collide = false;
+				for(Unit whichNearUnit : user.getUnits()) {
+					if(whichMove.equals(whichNearUnit.getBlockPosition())) {
+						collide = true;
+						break;
+					}
+				}
+				if(!collide) {
+					for(Unit whichNearUnit : enemy.getUnits()) {
+						if(whichMove.equals(whichNearUnit.getBlockPosition())) {
+							collide = true;
+							break;
+						}
+					}
+				}
+				if(!collide) {
+					validMoves.add(new ValidMove(Assets.magic, whichMove.x, whichMove.y));
+				}
+			}
+		}
+	}
+
+	private void drawPlayerUnits(Player player) {
+		Graphics graphics = game.getGraphics();
+		Matrix matrix = new Matrix();
+		for(Unit whichUnit : player.getUnits()) {
 			matrix.reset();
 			matrix.setScale(blockWidth / whichUnit.getImage().getWidth(), blockWidth / whichUnit.getImage().getHeight());
 			
@@ -163,22 +175,18 @@ public class GameScreen extends Screen {
 			}
 			graphics.drawBitmap(whichUnit.getImage(), matrix, null);
 		}
-		
-		for(Unit whichUnit : enemy.getUnits()) {
-			matrix.reset();
-			matrix.setScale(blockWidth / whichUnit.getImage().getWidth(), blockWidth / whichUnit.getImage().getHeight());
-			
-			PointF p = blockToScreenPosition(whichUnit.getBlockPosition());
-			matrix.postTranslate(p.x, p.y);
-			
-			graphics.drawBitmap(whichUnit.getImage(), matrix, null);
-		}
 	}
 
 	private Point screenToBlockPosition(float x, float y) {
 		Point answer = new Point((int)(x / blockWidth) , (int) ((y - startY) / blockWidth));
+		if(answer.x < 0) {
+			answer.x = 0;
+		}
 		if(answer.x >= boardSize.x) {
 			answer.x = boardSize.x - 1;
+		}
+		if(answer.y < 0) {
+			answer.y = 0;
 		}
 		if(answer.y >= boardSize.y) {
 			answer.y = boardSize.y - 1;
