@@ -44,13 +44,15 @@ public class GameScreen extends Screen {
 	}
 
 	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
+		final int cWidth = Assets.characterImg.getWidth();
+		final int cHeight = Assets.characterImg.getHeight();
 		int len = touchEvents.size();
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 			
 			if(event.type == TouchEvent.TOUCH_DOWN)
 			{
-				if (inBounds(event, character.getX(), character.getY(), 76, 76)) {
+				if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
 					character.update(event);
 					touchDown = true;
 				}
@@ -61,7 +63,7 @@ public class GameScreen extends Screen {
 				}
 			}
 			else if (event.type == TouchEvent.TOUCH_UP) {
-				if (inBounds(event, character.getX(), character.getY(), 76, 76)) {
+				if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
 					character.update(event);
 					touchDown = false;
 				}
