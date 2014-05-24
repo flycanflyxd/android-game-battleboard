@@ -1,7 +1,11 @@
 package com.battleBoard.battleBoardGame;
 
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.battleBoard.framework.Game;
@@ -9,15 +13,19 @@ import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
 
 public class GameScreen extends Screen {
-	enum GameState {
-		battling
+	enum BattleState {
+		normal, selectingUnit, draggingUnit, selectingAbility, castingAbility, computerMove
 	}
-
-	private GameState state = GameState.battling;
+	
+	private BattleState state = BattleState.normal;
 	private Character character;
 	private Board board;
 	private Paint textPaint;
-	boolean touchDown = false;
+	private Point boardSize = new Point(5, 5);
+	private final int screenWidth;
+	private final int screenHeight;
+	private final float blockWidth;
+	private final float startY;
 
 	public GameScreen(Game game) {
 		super(game);
@@ -30,6 +38,11 @@ public class GameScreen extends Screen {
 		textPaint.setTextAlign(Paint.Align.LEFT);
 		textPaint.setAntiAlias(true);
 		textPaint.setColor(Color.BLACK);
+		
+		screenWidth = game.getScreenRect().width();
+		screenHeight = game.getScreenRect().height();		
+		blockWidth = (float)screenWidth / (float)boardSize.x;
+		startY = screenHeight * 0.5f - blockWidth * 2.5f;
 	}
 
 	@Override
@@ -39,57 +52,69 @@ public class GameScreen extends Screen {
 	
 	@Override
 	public void onTouchEvent(MotionEvent event) {
-		final int cWidth = Assets.characterImg.getWidth();
-		final int cHeight = Assets.characterImg.getHeight();
-		
-		if(event.getAction() == MotionEvent.ACTION_DOWN)
-		{
-			if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
-				character.update(event);
-				touchDown = true;
+		PointF screenPosition = new PointF(event.getX(), event.getY());
+		Point blockPosition = screenToBlockPosition(event.getX(), event.getY());
+						
+		if(state == BattleState.normal) {
+			if(blockPosition.equals(character.getBlockPosition()) && event.getAction() == MotionEvent.ACTION_DOWN) {
+				character.setScreenPosition(screenPosition);
+				state = BattleState.draggingUnit;
 			}
 		}
-		else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			if (touchDown) {
-				character.update(event);
+		else if(state == BattleState.draggingUnit) {
+			if(event.getAction() == MotionEvent.ACTION_UP) {
+				character.setBlockPosition(blockPosition);
+				character.setScreenPosition(blockToScreenPosition(blockPosition));
+				state = BattleState.normal;
+			}
+			else if(event.getAction() == MotionEvent.ACTION_MOVE) {
+				screenPosition.x -= blockWidth * 0.5;
+				screenPosition.y -= blockWidth * 0.5;
+				character.setScreenPosition(screenPosition);
 			}
 		}
-		else if (event.getAction() == MotionEvent.ACTION_UP) {
-			if (inBounds(event, character.getX(), character.getY(), cWidth, cHeight)) {
-				character.update(event);
-				touchDown = false;
-			}
-		}
-	}
-
-	private boolean inBounds(MotionEvent event, int x, int y, int width,
-			int height) {
-		if (event.getX() > x && event.getX() < x + width - 1 && event.getY() > y
-				&& event.getY() < y + height - 1)
-			return true;
-		else
-			return false;
 	}
 
 	@Override
 	public void paint(float deltaTime) {
-		Graphics g = game.getGraphics();
-
-		g.drawBackground(Assets.backgroundImg);
-
+		Graphics graphics = game.getGraphics();
+		graphics.drawBitmap(Assets.backgroundImg, null, new Rect(0, 0, screenWidth, screenHeight), null);
+		
+		Matrix matrix = new Matrix();
 		for(int i = 0; i < board.getRowSize(); ++i) {
 			for(int j = 0; j < board.getColSize(); ++j) {
-				g.drawBitmap(Assets.blockImg, board.getBlock(i, j).getX(), board.getBlock(i, j).getY(), null);
+				matrix.reset();
+				matrix.setScale(blockWidth / Assets.blockImg.getWidth(), blockWidth / Assets.blockImg.getHeight());
+				matrix.postTranslate(blockWidth * i, startY + blockWidth * j);
+				graphics.drawBitmap(Assets.blockImg, matrix, null);
 			}
 		}
 		
-		g.drawBitmap(Assets.characterImg, character.getX(), character.getY(), null);
-		g.drawText("xStart: " + Integer.toString(character.getxStart()), 500, 100, textPaint);
-		g.drawText("yStart: " + Integer.toString(character.getyStart()), 500, 150, textPaint);
-		g.drawText("xMovedDis: " + Integer.toString(character.getxMovedDis()), 500, 200, textPaint);
-		g.drawText("yMovedDis: " + Integer.toString(character.getyMovedDis()), 500, 250, textPaint);
-		g.drawText("xEnd: " + Integer.toString(character.getxEnd()), 500, 300, textPaint);
-		g.drawText("yEnd: " + Integer.toString(character.getyEnd()), 500, 350, textPaint);
+		matrix.reset();
+		matrix.setScale(blockWidth / Assets.characterImg.getWidth(), blockWidth / Assets.characterImg.getHeight());
+		if(state == BattleState.normal) {
+			PointF p = blockToScreenPosition(character.getBlockPosition());
+			matrix.postTranslate(p.x, p.y);
+		}
+		else if(state == BattleState.draggingUnit) {
+			matrix.postTranslate(character.getScreenPosition().x, character.getScreenPosition().y);
+		}
+		graphics.drawBitmap(Assets.characterImg, matrix, null);
+	}
+
+	private Point screenToBlockPosition(float x, float y) {
+		Point answer = new Point((int)(x / blockWidth) , (int) ((y - startY) / blockWidth));
+		if(answer.x >= boardSize.x) {
+			answer.x = boardSize.x - 1;
+		}
+		if(answer.y >= boardSize.y) {
+			answer.y = boardSize.y - 1;
+		}
+		return answer;
+	}
+	
+	private PointF blockToScreenPosition(Point blockPosition) {
+		return new PointF(blockPosition.x * blockWidth, startY + blockPosition.y * blockWidth);
 	}
 
 	@Override
