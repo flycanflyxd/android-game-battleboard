@@ -1,21 +1,33 @@
-package com.battleBoard.battleBoardGame;
+package com.battleBoard.battleBoardGame.Screens;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.Rect;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.Board;
+import com.battleBoard.battleBoardGame.Player;
+import com.battleBoard.battleBoardGame.ValidMove;
 import com.battleBoard.battleBoardGame.Units.AnotherUnit;
 import com.battleBoard.battleBoardGame.Units.SomeUnit;
 import com.battleBoard.battleBoardGame.Units.Unit;
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
+import com.battleBoard.battleBoardGame.R;
+
+import android.app.Activity;
 
 public class GameScreen extends Screen {
 	enum BattleState {
@@ -34,8 +46,10 @@ public class GameScreen extends Screen {
 	private Player user = new Player();
 	private Player enemy = new Player();
 	private Unit draggingUnit = null;
-	private ArrayList<ValidMove> validMoves = new ArrayList<ValidMove>();
-
+	private List<ValidMove> validMoves = new ArrayList<ValidMove>();
+	
+	private ViewGroup abilityButtons;
+	
 	public GameScreen(Game game) {
 		super(game);
 
@@ -57,6 +71,8 @@ public class GameScreen extends Screen {
 		enemy.addUnit(new AnotherUnit(4, 4));
 		enemy.addUnit(new AnotherUnit(4, 3));
 		enemy.addUnit(new AnotherUnit(4, 2));
+		
+		abilityButtons = (ViewGroup)(((Activity)game).findViewById(R.id.buttons));	
 	}
 
 	@Override
@@ -68,16 +84,31 @@ public class GameScreen extends Screen {
 	public void onTouchEvent(MotionEvent event) {
 		PointF screenPosition = new PointF(event.getX(), event.getY());
 		Point blockPosition = screenToBlockPosition(event.getX(), event.getY());
-						
+					
 		if(state == BattleState.normal) {
-			for(Unit whichUnit : user.getUnits()) {
-				if(blockPosition.equals(whichUnit.getBlockPosition()) && event.getAction() == MotionEvent.ACTION_DOWN) {
-					screenPosition.x -= blockWidth * 0.5;
-					screenPosition.y -= blockWidth * 0.5;
-					whichUnit.setScreenPosition(screenPosition);
-					generateValidMoves(whichUnit);				
-					state = BattleState.draggingUnit;
-					break;
+			if(event.getAction() == MotionEvent.ACTION_DOWN) {
+				for(Unit whichUnit : user.getUnits()) {
+					if(blockPosition.equals(whichUnit.getBlockPosition())) {
+						screenPosition.x -= blockWidth * 0.5;
+						screenPosition.y -= blockWidth * 0.5;
+						whichUnit.setScreenPosition(screenPosition);
+						validMoves = generateValidMoves(whichUnit);				
+						state = BattleState.draggingUnit;
+						
+						
+						Button abilityButton = (Button) LayoutInflater.from((Activity)game).inflate(
+				                R.layout.button_test, abilityButtons, false);
+						abilityButton.setOnClickListener(new View.OnClickListener() {
+				            @Override
+				            public void onClick(View view) {
+				                //進入施展技能狀態
+				            }
+				        });
+						abilityButtons.addView(abilityButton, 0);
+						
+						
+						break;
+					}
 				}
 			}
 		}
@@ -93,9 +124,19 @@ public class GameScreen extends Screen {
 				if(!collide) {
 					draggingUnit.setBlockPosition(blockPosition);
 					draggingUnit.setScreenPosition(blockToScreenPosition(blockPosition));
+					
+					for(Unit whichUnit : enemy.getUnits()) {
+						List<ValidMove> moves = generateValidMoves(whichUnit);
+						if(moves.size() > 0) {
+							whichUnit.setBlockPosition(moves.get((new Random()).nextInt(moves.size())).getBlockPosition());
+							whichUnit.setScreenPosition(blockToScreenPosition(whichUnit.getBlockPosition()));
+							break;
+						}
+					}
 				}
 				draggingUnit = null;
 				validMoves.clear();
+				abilityButtons.removeAllViews();
 				state = BattleState.normal;
 			}
 			else if(event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -108,8 +149,9 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void paint(float deltaTime) {
+		super.paint(deltaTime);
 		Graphics graphics = game.getGraphics();
-		graphics.drawBitmap(Assets.backgroundImg, null, new Rect(0, 0, screenWidth, screenHeight), null);
+		graphics.drawBackground(Assets.backgroundImg);
 		
 		Matrix matrix = new Matrix();
 		for(int i = 0; i < board.getRowSize(); ++i) {
@@ -121,7 +163,8 @@ public class GameScreen extends Screen {
 			}
 		}
 		
-		for(ValidMove whichValidMove : validMoves) {
+		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
+		for(ValidMove whichValidMove : tempValidMoves) {
 			matrix.reset();
 			matrix.setScale(blockWidth / whichValidMove.getImage().getWidth(), blockWidth / whichValidMove.getImage().getHeight());			
 			PointF p = blockToScreenPosition(whichValidMove.getBlockPosition());
@@ -129,11 +172,13 @@ public class GameScreen extends Screen {
 			graphics.drawBitmap(whichValidMove.getImage(), matrix, null);
 		}
 		
-		drawPlayerUnits(user);
 		drawPlayerUnits(enemy);
+		drawPlayerUnits(user);
+		this.setNeedRedraw(false);
 	}
 	
-	private void generateValidMoves(Unit whichUnit) {
+	private List<ValidMove> generateValidMoves(Unit whichUnit) {
+		List<ValidMove> answer = new ArrayList<ValidMove>();
 		draggingUnit = whichUnit;
 		for(Point whichMove : draggingUnit.getValidMoves()) {
 			if(ValidBlockPosition(whichMove)) {
@@ -153,10 +198,11 @@ public class GameScreen extends Screen {
 					}
 				}
 				if(!collide) {
-					validMoves.add(new ValidMove(Assets.magic, whichMove.x, whichMove.y));
+					answer.add(new ValidMove(Assets.magic, whichMove.x, whichMove.y));
 				}
 			}
 		}
+		return answer;
 	}
 
 	private void drawPlayerUnits(Player player) {
@@ -178,7 +224,7 @@ public class GameScreen extends Screen {
 	}
 
 	private Point screenToBlockPosition(float x, float y) {
-		Point answer = new Point((int)(x / blockWidth) , (int) ((y - startY) / blockWidth));
+		Point answer = new Point((int)(x / blockWidth) , (int)((y - startY) / blockWidth));
 		if(answer.x < 0) {
 			answer.x = 0;
 		}

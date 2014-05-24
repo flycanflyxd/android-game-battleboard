@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.battleBoard.battleBoardGame.R;
 import com.battleBoard.framework.Audio;
 import com.battleBoard.framework.FileIO;
 import com.battleBoard.framework.Game;
@@ -16,7 +17,7 @@ import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
 
 public abstract class AndroidGame extends Activity implements Game {
-    AndroidFastRenderView renderView;
+    protected AndroidFastRenderView renderView;
     Graphics graphics;
     Audio audio;
     FileIO fileIO;
@@ -39,12 +40,13 @@ public abstract class AndroidGame extends Activity implements Game {
         Bitmap frameBuffer = Bitmap.createBitmap(screenRect.width(),
         		screenRect.height(), Config.RGB_565);
         
-        renderView = new AndroidFastRenderView(this, frameBuffer);
+        setContentView(R.layout.main_layout);
+        renderView = (AndroidFastRenderView) findViewById(R.id.main_view);
+        renderView.Initialize(this, frameBuffer);
         graphics = new Graphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
         screen = getInitScreen();
-        setContentView(renderView);
     }
 
     @Override
