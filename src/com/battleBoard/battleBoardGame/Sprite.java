@@ -1,27 +1,21 @@
 package com.battleBoard.battleBoardGame;
 
+import android.graphics.Point;
+
 public abstract class Sprite {
-	protected int x;
-	protected int y;
+	private Point blockPosition;
 	
 	public Sprite(int x, int y)	{
-		this.x = x;
-		this.y = y;
+		blockPosition = new Point();
+		blockPosition.x = x;
+		blockPosition.y = y;
 	}
 	
-	public int getX() {
-		return x;
+	public Point getBlockPosition() {
+		return blockPosition;
 	}
 	
-	public void setX(int x)	{
-		this.x = x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public void setY(int y)	{
-		this.y = y;
+	public void setBlockPosition(Point blockPosition) {
+		this.blockPosition = blockPosition;
 	}
 }

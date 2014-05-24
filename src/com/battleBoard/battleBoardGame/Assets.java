@@ -8,7 +8,7 @@ public class Assets {
 
 	public static Music theme;
 	
-	public static void load(SampleGame sampleGame) {
+	public static void load(BattleBoard sampleGame) {
 		theme = sampleGame.getAudio().createMusic("RainyMemory.mp3");
 		theme.setLooping(true);
 		theme.setVolume(0.85f);

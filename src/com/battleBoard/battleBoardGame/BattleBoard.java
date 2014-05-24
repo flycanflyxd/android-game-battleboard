@@ -10,7 +10,7 @@ import android.util.Log;*/
 import com.battleBoard.framework.Screen;
 import com.battleBoard.framework.implementation.AndroidGame;
 
-public class SampleGame extends AndroidGame {
+public class BattleBoard extends AndroidGame {
 
 	boolean firstTimeCreate = true;
 

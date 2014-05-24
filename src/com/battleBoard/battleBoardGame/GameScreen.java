@@ -18,7 +18,6 @@ public class GameScreen extends Screen {
 	}
 	
 	private BattleState state = BattleState.normal;
-	private Character character;
 	private Board board;
 	private Paint textPaint;
 	private Point boardSize = new Point(5, 5);
@@ -26,11 +25,14 @@ public class GameScreen extends Screen {
 	private final int screenHeight;
 	private final float blockWidth;
 	private final float startY;
+	
+	private Player user = null;
+	
+	private Unit draggingUnit = null;
 
 	public GameScreen(Game game) {
 		super(game);
 		
-		character = new Character(80, 50);
 		board = new Board();
 
 		textPaint = new Paint();
@@ -43,6 +45,12 @@ public class GameScreen extends Screen {
 		screenHeight = game.getScreenRect().height();		
 		blockWidth = (float)screenWidth / (float)boardSize.x;
 		startY = screenHeight * 0.5f - blockWidth * 2.5f;
+		
+		user = new Player();
+		user.addUnit(new SomeUnit(Assets.characterImg, 0, 0));
+		user.addUnit(new SomeUnit(Assets.characterImg, 1, 1));
+		user.addUnit(new SomeUnit(Assets.characterImg, 1, 2));
+		user.addUnit(new SomeUnit(Assets.characterImg, 0, 2));
 	}
 
 	@Override
@@ -56,21 +64,35 @@ public class GameScreen extends Screen {
 		Point blockPosition = screenToBlockPosition(event.getX(), event.getY());
 						
 		if(state == BattleState.normal) {
-			if(blockPosition.equals(character.getBlockPosition()) && event.getAction() == MotionEvent.ACTION_DOWN) {
-				character.setScreenPosition(screenPosition);
-				state = BattleState.draggingUnit;
+			for(Unit whichUnit : user.getUnits()) {
+				if(blockPosition.equals(whichUnit.getBlockPosition()) && event.getAction() == MotionEvent.ACTION_DOWN) {
+					whichUnit.setScreenPosition(screenPosition);
+					draggingUnit = whichUnit;
+					state = BattleState.draggingUnit;
+					break;
+				}
 			}
 		}
 		else if(state == BattleState.draggingUnit) {
 			if(event.getAction() == MotionEvent.ACTION_UP) {
-				character.setBlockPosition(blockPosition);
-				character.setScreenPosition(blockToScreenPosition(blockPosition));
+				boolean collide = false;
+				for(Unit whichUnit : user.getUnits()) {
+					if(whichUnit != draggingUnit && whichUnit.getBlockPosition().equals(blockPosition)) {
+						collide = true;
+						break;
+					}
+				}
+				if(!collide) {
+					draggingUnit.setBlockPosition(blockPosition);
+					draggingUnit.setScreenPosition(blockToScreenPosition(blockPosition));
+				}
+				draggingUnit = null;
 				state = BattleState.normal;
 			}
 			else if(event.getAction() == MotionEvent.ACTION_MOVE) {
 				screenPosition.x -= blockWidth * 0.5;
 				screenPosition.y -= blockWidth * 0.5;
-				character.setScreenPosition(screenPosition);
+				draggingUnit.setScreenPosition(screenPosition);
 			}
 		}
 	}
@@ -90,16 +112,19 @@ public class GameScreen extends Screen {
 			}
 		}
 		
-		matrix.reset();
-		matrix.setScale(blockWidth / Assets.characterImg.getWidth(), blockWidth / Assets.characterImg.getHeight());
-		if(state == BattleState.normal) {
-			PointF p = blockToScreenPosition(character.getBlockPosition());
-			matrix.postTranslate(p.x, p.y);
+		for(Unit whichUnit : user.getUnits()) {
+			matrix.reset();
+			matrix.setScale(blockWidth / Assets.characterImg.getWidth(), blockWidth / Assets.characterImg.getHeight());
+			
+			if(state == BattleState.draggingUnit && whichUnit == draggingUnit) {
+				matrix.postTranslate(whichUnit.getScreenPosition().x, whichUnit.getScreenPosition().y);
+			}
+			else {
+				PointF p = blockToScreenPosition(whichUnit.getBlockPosition());
+				matrix.postTranslate(p.x, p.y);
+			}
+			graphics.drawBitmap(Assets.characterImg, matrix, null);
 		}
-		else if(state == BattleState.draggingUnit) {
-			matrix.postTranslate(character.getScreenPosition().x, character.getScreenPosition().y);
-		}
-		graphics.drawBitmap(Assets.characterImg, matrix, null);
 	}
 
 	private Point screenToBlockPosition(float x, float y) {
