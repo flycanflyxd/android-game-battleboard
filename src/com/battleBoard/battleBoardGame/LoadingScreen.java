@@ -20,11 +20,7 @@ public class LoadingScreen extends Screen {
 		Assets.backgroundImg = g.newImage("background.png", ImageFormat.RGB565);
 		Assets.characterImg = g.newImage("character.png", ImageFormat.ARGB4444);
 		Assets.blockImg = g.newImage("block.png", ImageFormat.ARGB4444);
-
-		//This is how you would load a sound if you had one.
-		//Assets.click = game.getAudio().createSound("explode.ogg");
-
-		
+		Assets.magic = g.newImage("magic.png", ImageFormat.ARGB4444);
 		game.setScreen(new MainMenuScreen(game));
 
 	}

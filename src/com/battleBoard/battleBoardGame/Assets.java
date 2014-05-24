@@ -5,6 +5,7 @@ import com.battleBoard.framework.Music;
 
 public class Assets {	
 	public static Bitmap menuImg, splashImg, backgroundImg, characterImg, blockImg;
+	public static Bitmap magic;
 
 	public static Music theme;
 	
