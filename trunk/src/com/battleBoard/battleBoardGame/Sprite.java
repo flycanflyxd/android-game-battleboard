@@ -15,6 +15,14 @@ public abstract class Sprite {
 		return blockPosition;
 	}
 	
+	public int getX() {
+		return blockPosition.x;
+	}
+	
+	public int getY() {
+		return blockPosition.y;
+	}
+	
 	public void setBlockPosition(Point blockPosition) {
 		this.blockPosition = blockPosition;
 	}
