@@ -1,32 +1,97 @@
 package com.battleBoard.framework;
 
+import java.io.IOException;
+import java.io.InputStream;
 
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
-public interface Graphics {
+import com.battleBoard.framework.Graphics;
+import com.battleBoard.framework.implementation.AndroidImage;
+
+public class Graphics extends Canvas{
 	public static enum ImageFormat {
 		ARGB8888, ARGB4444, RGB565
 	}
+    AssetManager assets;
+    Bitmap frameBuffer;
+    Paint paint;
+    Rect srcRect = new Rect();
+    Rect dstRect = new Rect();
 
-	public Image newImage(String fileName, ImageFormat format);
+    public Graphics(AssetManager assets, Bitmap frameBuffer) {
+    	super(frameBuffer);
+        this.assets = assets;
+        this.frameBuffer = frameBuffer;
+        this.paint = new Paint();
+    }
 
-	public void clearScreen(int color);
+    public Image newImage(String fileName, ImageFormat format) {
+        Config config = null;
+        if (format == ImageFormat.RGB565)
+            config = Config.RGB_565;
+        else if (format == ImageFormat.ARGB4444)
+            config = Config.ARGB_4444;
+        else
+            config = Config.ARGB_8888;
 
-	public void drawLine(int x, int y, int x2, int y2, int color);
+        Options options = new Options();
+        options.inPreferredConfig = config;
+        
+        
+        InputStream in = null;
+        Bitmap bitmap = null;
+        try {
+            in = assets.open(fileName);
+            bitmap = BitmapFactory.decodeStream(in, null, options);
+            if (bitmap == null)
+                throw new RuntimeException("Couldn't load bitmap from asset '"
+                        + fileName + "'");
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't load bitmap from asset '"
+                    + fileName + "'");
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                }
+            }
+        }
 
-	public void drawRect(int x, int y, int width, int height, int color);
+        if (bitmap.getConfig() == Config.RGB_565)
+            format = ImageFormat.RGB565;
+        else if (bitmap.getConfig() == Config.ARGB_4444)
+            format = ImageFormat.ARGB4444;
+        else
+            format = ImageFormat.ARGB8888;
 
-	public void drawImage(Image image, int x, int y, int srcX, int srcY,
-			int srcWidth, int srcHeight);
+        return new AndroidImage(bitmap, format);
+    }
 
-	public void drawImage(Image Image, int x, int y);
+    public void clearScreen(int color) {
+        drawRGB((color & 0xff0000) >> 16, (color & 0xff00) >> 8,
+                (color & 0xff));
+    }
 
-	void drawString(String text, int x, int y, Paint paint);
+    public void drawBackground(Bitmap bitmap) {
+    	Matrix matrix = new Matrix();
+    	matrix.setScale((float)frameBuffer.getWidth() / (float)bitmap.getWidth(), (float)frameBuffer.getHeight() / (float)bitmap.getHeight());
+    	drawBitmap(bitmap, matrix, null);
+    }
+   
+    public int getWidth() {
+        return frameBuffer.getWidth();
+    }
 
-	public int getWidth();
-
-	public int getHeight();
-
-	public void drawARGB(int i, int j, int k, int l);
-
+    public int getHeight() {
+        return frameBuffer.getHeight();
+    }
 }

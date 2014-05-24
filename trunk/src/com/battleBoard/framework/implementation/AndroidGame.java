@@ -1,13 +1,12 @@
 package com.battleBoard.framework.implementation;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -25,9 +24,8 @@ public abstract class AndroidGame extends Activity implements Game {
     Input input;
     FileIO fileIO;
     Screen screen;
-    WakeLock wakeLock;
+    private Rect screenRect = new Rect();
 
-    @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,33 +34,29 @@ public abstract class AndroidGame extends Activity implements Game {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        int frameBufferWidth = isPortrait ? 480: 800;
-        int frameBufferHeight = isPortrait ? 800: 480;
-        Bitmap frameBuffer = Bitmap.createBitmap(frameBufferWidth,
-                frameBufferHeight, Config.RGB_565);
+        DisplayMetrics display = getResources().getDisplayMetrics();
+        screenRect = new Rect();
+        screenRect.right = display.widthPixels;
+        screenRect.bottom = display.heightPixels;
         
-        float scaleX = (float) frameBufferWidth
-                / getWindowManager().getDefaultDisplay().getWidth();
-        float scaleY = (float) frameBufferHeight
-                / getWindowManager().getDefaultDisplay().getHeight();
+        Log.d("width", String.valueOf(screenRect.right));
+        Log.d("height", String.valueOf(screenRect.bottom));
 
+        Bitmap frameBuffer = Bitmap.createBitmap(screenRect.width(),
+        		screenRect.height(), Config.RGB_565);
+        
         renderView = new AndroidFastRenderView(this, frameBuffer);
-        graphics = new AndroidGraphics(getAssets(), frameBuffer);
+        graphics = new Graphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(this);
         audio = new AndroidAudio(this);
-        input = new AndroidInput(this, renderView, scaleX, scaleY);
+        input = new AndroidInput(this, renderView, 1.0f, 1.0f);
         screen = getInitScreen();
         setContentView(renderView);
-        
-        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MyGame");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        wakeLock.acquire();
         screen.resume();
         renderView.resume();
     }
@@ -70,7 +64,6 @@ public abstract class AndroidGame extends Activity implements Game {
     @Override
     public void onPause() {
         super.onPause();
-        wakeLock.release();
         renderView.pause();
         screen.pause();
 
@@ -111,7 +104,10 @@ public abstract class AndroidGame extends Activity implements Game {
     }
     
     public Screen getCurrentScreen() {
-
     	return screen;
+    }
+    
+    public Rect getScreenRect() {
+    	return screenRect;
     }
 }
