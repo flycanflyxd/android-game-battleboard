@@ -6,12 +6,12 @@ import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.framework.Game;
-import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
+import com.battleBoard.framework.implementation.Graphics;
 
 public class MainMenuScreen extends Screen {
 	Paint paint;
-	
+
 	public MainMenuScreen(Game game) {
 		super(game);
 		paint = new Paint();
@@ -24,7 +24,7 @@ public class MainMenuScreen extends Screen {
 	@Override
 	public void update(float deltaTime) {
 	}
-	
+
 	@Override
 	public void onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -35,11 +35,9 @@ public class MainMenuScreen extends Screen {
 
 		}
 	}
-	
-	private boolean inBounds(MotionEvent event, int x, int y, int width,
-			int height) {
-		if (event.getX() > x && event.getX() < x + width - 1 && event.getY() > y
-				&& event.getY() < y + height - 1)
+
+	private boolean inBounds(MotionEvent event, int x, int y, int width, int height) {
+		if (event.getX() > x && event.getX() < x + width - 1 && event.getY() > y && event.getY() < y + height - 1)
 			return true;
 		else
 			return false;
@@ -48,7 +46,7 @@ public class MainMenuScreen extends Screen {
 	@Override
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
-		g.drawBackground(Assets.menuImg);	
+		g.drawBackground(Assets.menuImg);
 		g.drawText("START", 50, 400, paint);
 	}
 
@@ -68,7 +66,7 @@ public class MainMenuScreen extends Screen {
 
 	@Override
 	public void backButton() {
-        android.os.Process.killProcess(android.os.Process.myPid());
+		android.os.Process.killProcess(android.os.Process.myPid());
 
-	}	
+	}
 }

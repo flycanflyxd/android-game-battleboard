@@ -4,13 +4,13 @@ import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.framework.Game;
-import com.battleBoard.framework.Graphics;
-import com.battleBoard.framework.Graphics.ImageFormat;
+import com.battleBoard.framework.implementation.Graphics;
+import com.battleBoard.framework.implementation.Graphics.ImageFormat;
 import com.battleBoard.framework.Screen;
 
 public class LoadingScreen extends Screen {
 	public LoadingScreen(Game game) {
-		
+
 		super(game);
 	}
 
