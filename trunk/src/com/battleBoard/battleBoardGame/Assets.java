@@ -3,13 +3,13 @@ package com.battleBoard.battleBoardGame;
 import android.graphics.Bitmap;
 import com.battleBoard.framework.Music;
 
-public class Assets {	
+public class Assets {
 	public static Bitmap menuImg, splashImg, backgroundImg, characterImg, blockImg;
 	public static Bitmap magic;
 	public static Bitmap unit1;
 
 	public static Music theme;
-	
+
 	public static void load(BattleBoard sampleGame) {
 		theme = sampleGame.getAudio().createMusic("RainyMemory.mp3");
 		theme.setLooping(true);

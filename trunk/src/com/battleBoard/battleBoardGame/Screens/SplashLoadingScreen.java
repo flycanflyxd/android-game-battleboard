@@ -4,9 +4,9 @@ import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.framework.Game;
-import com.battleBoard.framework.Graphics;
 import com.battleBoard.framework.Screen;
-import com.battleBoard.framework.Graphics.ImageFormat;
+import com.battleBoard.framework.implementation.Graphics;
+import com.battleBoard.framework.implementation.Graphics.ImageFormat;
 
 public class SplashLoadingScreen extends Screen {
 	public SplashLoadingScreen(Game game) {
@@ -43,6 +43,6 @@ public class SplashLoadingScreen extends Screen {
 	@Override
 	public void onTouchEvent(MotionEvent motionEvent) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

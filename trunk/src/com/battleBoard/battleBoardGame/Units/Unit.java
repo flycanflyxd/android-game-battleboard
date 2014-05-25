@@ -13,7 +13,7 @@ public abstract class Unit extends Sprite {
 	protected Bitmap image = null;
 	protected ArrayList<Point> validMoveDirections = new ArrayList<Point>();
 	protected float hp = 0.0f;
-	
+
 	public Unit(int x, int y) {
 		super(x, y);
 	}
@@ -32,7 +32,7 @@ public abstract class Unit extends Sprite {
 
 	public ArrayList<Point> getValidMoves() {
 		ArrayList<Point> validMoves = new ArrayList<Point>();
-		for(Point whichDirection : validMoveDirections) {
+		for (Point whichDirection : validMoveDirections) {
 			validMoves.add(new Point(getX() + whichDirection.x, getY() + whichDirection.y));
 		}
 		return validMoves;

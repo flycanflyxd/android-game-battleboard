@@ -1,11 +1,11 @@
 package com.battleBoard.battleBoardGame;
 
 /*import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.InputStreamReader;
 
-import android.util.Log;*/
+ import android.util.Log;*/
 
 import com.battleBoard.battleBoardGame.Screens.SplashLoadingScreen;
 import com.battleBoard.framework.Screen;
