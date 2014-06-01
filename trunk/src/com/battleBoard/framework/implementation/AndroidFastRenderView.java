@@ -45,16 +45,17 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable, Surf
 		Screen currentScreen;
 		long startTime = System.nanoTime();
 		while (running) {
-			float deltaTime = (System.nanoTime() - startTime) * 0.00000001f;
+			float deltaTime = (System.nanoTime() - startTime) * 0.000001f;
 			startTime = System.nanoTime();
 
-			if (deltaTime > 3.15f) {
-				deltaTime = 3.15f;
-			}
+//			if (deltaTime > 3.15f) {
+//				deltaTime = 3.15f;
+//			}
 
 			currentScreen = game.getCurrentScreen();
 			currentScreen.update(deltaTime);
-			if (currentScreen.NeedRedraw()) {
+			//if (currentScreen.NeedRedraw()) {
+			if(true) {
 				currentScreen.paint();
 				canvas = holder.lockCanvas();
 				if (canvas != null) {

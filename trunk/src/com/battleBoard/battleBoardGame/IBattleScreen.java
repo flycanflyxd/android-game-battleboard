@@ -25,4 +25,6 @@ public interface IBattleScreen {
 	public Graphics getGraphics();
 
 	public Game getGame();
+
+	public void createFloatText(String text, Point blockPosition);
 }
