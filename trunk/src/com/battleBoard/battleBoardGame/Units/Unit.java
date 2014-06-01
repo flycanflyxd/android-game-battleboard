@@ -35,14 +35,14 @@ public abstract class Unit extends Sprite {
 		}
 		return validMoves;
 	}
-	
+
 	public void damage(float damage) {
 		hp -= damage;
-		if(damage < 0.0f) {
+		if (damage < 0.0f) {
 			hp = 0.0f;
 		}
 	}
-	
+
 	public boolean isDead() {
 		return hp <= 0.0f;
 	}
