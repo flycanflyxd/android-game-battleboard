@@ -8,7 +8,10 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Board;
+import com.battleBoard.battleBoardGame.FloatText;
+import com.battleBoard.battleBoardGame.FloatTextManager;
 import com.battleBoard.battleBoardGame.IBattleScreen;
+import com.battleBoard.battleBoardGame.IBattleScreenForFloatText;
 import com.battleBoard.battleBoardGame.Player;
 import com.battleBoard.battleBoardGame.Sprite;
 import com.battleBoard.battleBoardGame.World;
@@ -21,7 +24,7 @@ import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Screen;
 import com.battleBoard.framework.implementation.Graphics;
 
-public class GameScreen extends Screen implements IBattleScreen {
+public class GameScreen extends Screen implements IBattleScreen, IBattleScreenForFloatText {
 
 	private final float blockWidth;
 	private final float startY;
@@ -29,6 +32,7 @@ public class GameScreen extends Screen implements IBattleScreen {
 	private World world = null;
 	private Matrix matrix = new Matrix();
 	private BattleState state;
+	private FloatTextManager floatTextManager;
 
 	public GameScreen(Game game) {
 		super(game);
@@ -59,11 +63,14 @@ public class GameScreen extends Screen implements IBattleScreen {
 		world = new World(this, board, user, enemy);
 
 		setState(new NormalState(this));
+		
+		floatTextManager = new FloatTextManager(this);
 	}
 
 	@Override
 	public void update(float deltaTime) {
 		state.update(deltaTime);
+		floatTextManager.update(deltaTime);
 	}
 
 	@Override
@@ -83,6 +90,8 @@ public class GameScreen extends Screen implements IBattleScreen {
 		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 
 		game.getGraphics().drawText("state=" + state.toString(), 0, 100, paint);
+		
+		floatTextManager.paint();
 
 		//this.setNeedRedraw(false);
 	}
@@ -172,6 +181,13 @@ public class GameScreen extends Screen implements IBattleScreen {
 		return game.getGraphics();
 	}
 
+	@Override
+	public void createFloatText(String text, Point blockPosition) {
+		PointF screenPosition = blockToScreenPosition(blockPosition);
+		screenPosition.x += blockWidth * 0.3f;
+		floatTextManager.createFloatText(new FloatText(text, screenPosition));
+	}
+	
 	@Override
 	public void pause() {
 

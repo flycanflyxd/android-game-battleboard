@@ -16,19 +16,12 @@ public class World {
 	private Board board = null;
 	private Player user = null;
 	private Player enemy = null;
-
-	Paint paint = null;
 	
 	public World(IBattleScreen battleScreen, Board board, Player user, Player enemy) {
 		this.battleScreen = battleScreen;
 		this.board = board;
 		this.user = user;
 		this.enemy = enemy;
-		
-		paint = new Paint();
-		paint.setColor(Color.GREEN);
-		paint.setTextSize(22);
-		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 	}
 
 	public Board getBoard() {
@@ -56,8 +49,7 @@ public class World {
 			board.getBlock(unitUnderDamage.getBlockPosition()).removeUnit();
 		}
 		
-		PointF screenPosition = battleScreen.blockToScreenPosition(unitUnderDamage.getBlockPosition());
-		battleScreen.getGraphics().drawText(String.valueOf(damageAmount), screenPosition.x, screenPosition.y, paint);
+		battleScreen.createFloatText(String.valueOf(damageAmount), unitUnderDamage.getBlockPosition());
 	}
 
 	public List<ValidMove> generateValidMoves(Unit whichUnit) {
