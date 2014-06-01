@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.battleBoardGame.Board;
 import com.battleBoard.battleBoardGame.Player;
+import com.battleBoard.battleBoardGame.Sprite;
 import com.battleBoard.battleBoardGame.ValidMove;
 import com.battleBoard.battleBoardGame.Units.AnotherUnit;
 import com.battleBoard.battleBoardGame.Units.SomeUnit;
@@ -23,8 +24,6 @@ import com.battleBoard.framework.implementation.Graphics;
 
 public class GameScreen extends Screen {
 
-	// normal, selectingUnit, draggingUnit, selectingAbility, ticking
-
 	private Board board = null;
 	private final int screenWidth;
 	private final int screenHeight;
@@ -32,21 +31,7 @@ public class GameScreen extends Screen {
 	private final float startY;
 	private Player user = new Player();
 	private Player enemy = new Player();
-
-	public Board getBoard() {
-		return board;
-	}
-
-	public Player getUser() {
-		return user;
-	}
-
-	public Player getEnemy() {
-		return enemy;
-	}
-
-	// private ViewGroup abilityButtons;
-
+	Matrix matrix = new Matrix();
 	private IBattleState state;
 
 	public GameScreen(Game game) {
@@ -73,9 +58,6 @@ public class GameScreen extends Screen {
 		board.UnitGetIn(unit, unit.getBlockPosition());
 
 		setState(new NormalState(this, game.getGraphics()));
-
-		// abilityButtons = (ViewGroup) (((Activity)
-		// game).findViewById(R.id.buttons));
 	}
 
 	@Override
@@ -86,14 +68,13 @@ public class GameScreen extends Screen {
 	@Override
 	public void onTouchEvent(MotionEvent event) {
 		state.onTouchEvent(event);
+		this.setNeedRedraw(true);
 	}
 
 	@Override
 	public void paint() {
 		super.paint();
-
 		state.paint();
-
 		this.setNeedRedraw(false);
 	}
 
@@ -103,6 +84,7 @@ public class GameScreen extends Screen {
 		unit.setBlockPosition(newBlockPosition);
 	}
 
+	// TODO 移到適當地方
 	public List<ValidMove> generateValidMoves(Unit whichUnit) {
 		List<ValidMove> answer = new ArrayList<ValidMove>();
 		for (Point whichMove : whichUnit.getValidMoves()) {
@@ -117,7 +99,6 @@ public class GameScreen extends Screen {
 
 	public void drawPlayerUnits(Player player) {
 		Graphics graphics = game.getGraphics();
-		Matrix matrix = new Matrix();
 		for (Unit whichUnit : player.getUnits()) {
 			matrix.reset();
 			matrix.setScale(blockWidth / whichUnit.getImage().getWidth(), blockWidth / whichUnit.getImage().getHeight());
@@ -131,7 +112,6 @@ public class GameScreen extends Screen {
 
 	public void drawPlayerUnits(Player player, Unit dontDrawThisUnit) {
 		Graphics graphics = game.getGraphics();
-		Matrix matrix = new Matrix();
 		for (Unit whichUnit : player.getUnits()) {
 			matrix.reset();
 			matrix.setScale(blockWidth / whichUnit.getImage().getWidth(), blockWidth / whichUnit.getImage().getHeight());
@@ -147,25 +127,30 @@ public class GameScreen extends Screen {
 		}
 	}
 
-	public Point screenToBlockPosition(float x, float y) {
-		Point answer = new Point((int) (x / blockWidth), (int) ((y - startY) / blockWidth));
-		if (answer.x < 0) {
-			answer.x = 0;
-		}
-		if (answer.x >= board.getWidth()) {
-			answer.x = board.getWidth() - 1;
-		}
-		if (answer.y < 0) {
-			answer.y = 0;
-		}
-		if (answer.y >= board.getHeight()) {
-			answer.y = board.getHeight() - 1;
-		}
-		return answer;
+	public void drawSprite(Sprite sprite) {
+		Graphics graphics = game.getGraphics();
+		matrix.setScale(blockWidth / sprite.getImage().getWidth(), blockWidth / sprite.getImage().getHeight());
+		PointF screenPosition = blockToScreenPosition(sprite.getBlockPosition());
+		matrix.postTranslate(screenPosition.x, screenPosition.y);
+		graphics.drawBitmap(sprite.getImage(), matrix, null);
 	}
 
-	public void setState(IBattleState newState) {
-		state = newState;
+	public Point screenToBlockPosition(float x, float y) {
+		Point answer = new Point((int) (x / blockWidth), (int) ((y - startY) / blockWidth));
+
+		if (answer.x < 0) {
+			answer.x = 0;
+		} else if (answer.x >= board.getWidth()) {
+			answer.x = board.getWidth() - 1;
+		}
+
+		if (answer.y < 0) {
+			answer.y = 0;
+		} else if (answer.y >= board.getHeight()) {
+			answer.y = board.getHeight() - 1;
+		}
+
+		return answer;
 	}
 
 	public PointF blockToScreenPosition(Point blockPosition) {
@@ -174,6 +159,35 @@ public class GameScreen extends Screen {
 
 	private boolean ValidBlockPosition(Point blockPosition) {
 		return blockPosition.x >= 0 && blockPosition.x < board.getWidth() && blockPosition.y >= 0 && blockPosition.y < board.getHeight();
+	}
+
+	public void setState(IBattleState newState) {
+		IBattleState oldState = state;
+
+		state = newState;
+		if (oldState != null) {
+			oldState.Dispose();
+		}
+	}
+
+	public float getBlockWidth() {
+		return blockWidth;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public Player getUser() {
+		return user;
+	}
+
+	public Player getEnemy() {
+		return enemy;
 	}
 
 	@Override
@@ -191,11 +205,8 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void backButton() {
+		state.Dispose();
 		game.setScreen(new MainMenuScreen(game));
-	}
-
-	public float getBlockWidth() {
-		return blockWidth;
 	}
 
 }
