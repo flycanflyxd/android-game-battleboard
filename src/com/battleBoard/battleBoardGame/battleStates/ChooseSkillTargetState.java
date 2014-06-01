@@ -3,40 +3,36 @@ package com.battleBoard.battleBoardGame.battleStates;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.battleBoard.battleBoardGame.Assets;
-import com.battleBoard.battleBoardGame.UnitAction;
-import com.battleBoard.battleBoardGame.ValidMove;
-import com.battleBoard.battleBoardGame.Screens.GameScreen;
-import com.battleBoard.battleBoardGame.Units.Unit;
-import com.battleBoard.battleBoardGame.skills.Skill;
-import com.battleBoard.framework.implementation.Graphics;
-
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
-public class ChooseSkillTargetState implements IBattleState {
+import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.IBattleScreen;
+import com.battleBoard.battleBoardGame.UnitAction;
+import com.battleBoard.battleBoardGame.ValidMove;
+import com.battleBoard.battleBoardGame.Units.Unit;
+import com.battleBoard.battleBoardGame.skills.Skill;
 
-	private GameScreen gameScreen = null;
-	private Graphics graphics = null;
+public class ChooseSkillTargetState extends BattleState {
+
 	private Unit caster = null;
 	private Skill skill = null;
 	private List<ValidMove> validTargetShadows = new ArrayList<ValidMove>();
 	private Boolean[][] validTargetTable = null;
-	ViewGroup abilityButtons;
+	private ViewGroup abilityButtons = null;
 
-	public ChooseSkillTargetState(GameScreen gameScreen, Graphics graphics, Unit caster, Skill skill, ViewGroup abilityButtons) {
-		this.gameScreen = gameScreen;
-		this.graphics = graphics;
+	public ChooseSkillTargetState(IBattleScreen battleScreen, Unit caster, Skill skill, ViewGroup abilityButtons) {
+		super(battleScreen);
 		this.caster = caster;
 		this.skill = skill;
 		this.abilityButtons = abilityButtons;
-		validTargetTable = new Boolean[gameScreen.getBoard().getWidth()][gameScreen.getBoard().getHeight()];
+		validTargetTable = new Boolean[world.getBoard().getWidth()][world.getBoard().getHeight()];
 
 		int distance = skill.getCastDistance();
-		for (int whichRow = 0; whichRow < gameScreen.getBoard().getHeight(); whichRow++) {
-			for (int whichCol = 0; whichCol < gameScreen.getBoard().getWidth(); whichCol++) {
+		for (int whichRow = 0; whichRow < world.getBoard().getHeight(); whichRow++) {
+			for (int whichCol = 0; whichCol < world.getBoard().getWidth(); whichCol++) {
 				if (PointF.length(whichCol - caster.getX(), whichRow - caster.getY()) <= distance) {
 					validTargetShadows.add(new ValidMove(Assets.skillTarget, whichCol, whichRow));
 					validTargetTable[whichCol][whichRow] = true;
@@ -54,31 +50,30 @@ public class ChooseSkillTargetState implements IBattleState {
 
 	@Override
 	public void onTouchEvent(MotionEvent event) {
-		Point blockPosition = gameScreen.screenToBlockPosition(event.getX(), event.getY());
+		Point blockPosition = battleScreen.screenToBlockPosition(event.getX(), event.getY());
 
 		if (validTargetTable[blockPosition.x][blockPosition.y]) {
-			gameScreen.setState(new TickingState(gameScreen, graphics, new UnitAction(caster, UnitAction.Type.castSkillTargetPoint, blockPosition, skill)));
+			battleScreen.setState(new TickingState(battleScreen, new UnitAction(caster, UnitAction.Type.castSkillTargetPoint, blockPosition, skill)));
 		} else {
-			gameScreen.setState(new NormalState(gameScreen, graphics));
+			battleScreen.setState(new NormalState(battleScreen));
 		}
-
 	}
 
 	@Override
 	public void paint() {
 		graphics.drawBackground(Assets.backgroundImg);
 
-		gameScreen.getBoard().draw();
+		world.getBoard().draw();
 
-		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
-		gameScreen.drawPlayerUnits(gameScreen.getUser());
+		battleScreen.drawPlayerUnits(battleScreen.getWorld().getEnemy());
+		battleScreen.drawPlayerUnits(battleScreen.getWorld().getUser());
 
 		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validTargetShadows);
 		for (ValidMove whichValidMove : tempValidMoves) {
-			gameScreen.drawSprite(whichValidMove);
+			battleScreen.drawSprite(whichValidMove);
 		}
 
-		gameScreen.drawSprite(new ValidMove(Assets.selectCircle, caster.getBlockPosition().x, caster.getBlockPosition().y));
+		battleScreen.drawSprite(new ValidMove(Assets.selectCircle, caster.getBlockPosition().x, caster.getBlockPosition().y));
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class AnotherUnit extends Unit {
 		validMoveDirections.add(new Point(-1, -1));
 		validMoveDirections.add(new Point(-1, 1));
 		validMoveDirections.add(new Point(1, -1));
-		
+
 		hp = 100.0f;
 	}
 }

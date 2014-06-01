@@ -4,28 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.IBattleScreen;
 import com.battleBoard.battleBoardGame.UnitAction;
 import com.battleBoard.battleBoardGame.ValidMove;
-import com.battleBoard.battleBoardGame.Screens.GameScreen;
 import com.battleBoard.battleBoardGame.Units.Unit;
-import com.battleBoard.framework.implementation.Graphics;
 
-public class DraggingUnitState implements IBattleState {
+public class DraggingUnitState extends BattleState {
 
-	private GameScreen gameScreen = null;
-	private Graphics graphics = null;
 	private Unit draggingUnit = null;
 	private PointF draggingScreenPosition = new PointF(0.0f, 0.0f);
 	private List<ValidMove> validMoves = null;
 
-	public DraggingUnitState(GameScreen gameScreen, Graphics graphics, PointF touchScreenPosition, Unit touchUnit, List<ValidMove> validMoves) {
-		this.gameScreen = gameScreen;
-		this.graphics = graphics;
+	public DraggingUnitState(IBattleScreen battleScreen, PointF touchScreenPosition, Unit touchUnit, List<ValidMove> validMoves) {
+		super(battleScreen);
 		this.draggingScreenPosition = touchScreenPosition;
 		this.draggingUnit = touchUnit;
 		this.validMoves = validMoves;
@@ -39,11 +36,11 @@ public class DraggingUnitState implements IBattleState {
 	@Override
 	public void onTouchEvent(MotionEvent event) {
 		PointF screenPosition = new PointF(event.getX(), event.getY());
-		Point blockPosition = gameScreen.screenToBlockPosition(event.getX(), event.getY());
+		Point blockPosition = battleScreen.screenToBlockPosition(event.getX(), event.getY());
 
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (draggingUnit.getBlockPosition().equals(blockPosition)) {
-				gameScreen.setState(new SelectingUnitState(gameScreen, graphics, draggingUnit, validMoves));
+				battleScreen.setState(new SelectingUnitState(battleScreen, draggingUnit, validMoves));
 			} else {
 				boolean collide = true;
 				for (ValidMove whichMove : validMoves) {
@@ -53,9 +50,9 @@ public class DraggingUnitState implements IBattleState {
 					}
 				}
 				if (!collide) {
-					gameScreen.setState(new TickingState(gameScreen, graphics, new UnitAction(draggingUnit, UnitAction.Type.move, blockPosition)));
+					battleScreen.setState(new TickingState(battleScreen, new UnitAction(draggingUnit, UnitAction.Type.move, blockPosition)));
 				} else {
-					gameScreen.setState(new NormalState(gameScreen, graphics));
+					battleScreen.setState(new NormalState(battleScreen));
 				}
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -67,27 +64,27 @@ public class DraggingUnitState implements IBattleState {
 	public void paint() {
 		graphics.drawBackground(Assets.backgroundImg);
 
-		gameScreen.getBoard().draw();
+		world.getBoard().draw();
 
 		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
 		for (ValidMove whichValidMove : tempValidMoves) {
-			gameScreen.drawSprite(whichValidMove);
+			battleScreen.drawSprite(whichValidMove);
 		}
 
-		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
-		gameScreen.drawPlayerUnits(gameScreen.getUser(), draggingUnit);
+		battleScreen.drawPlayerUnits(world.getEnemy());
+		battleScreen.drawPlayerUnits(world.getUser());
 
+		Paint paint = new Paint();
+		paint.setAlpha(150);
 		Matrix matrix = new Matrix();
-		float blockWidth = gameScreen.getBlockWidth();
+		float blockWidth = battleScreen.getBlockWidth();
 		matrix.setScale(blockWidth / draggingUnit.getImage().getWidth(), blockWidth / draggingUnit.getImage().getHeight());
 		matrix.postTranslate(draggingScreenPosition.x - 0.5f * blockWidth, draggingScreenPosition.y - 0.5f * blockWidth);
-		graphics.drawBitmap(draggingUnit.getImage(), matrix, null);
-
+		graphics.drawBitmap(draggingUnit.getImage(), matrix, paint);
 	}
 
 	@Override
 	public void Dispose() {
 
 	}
-
 }

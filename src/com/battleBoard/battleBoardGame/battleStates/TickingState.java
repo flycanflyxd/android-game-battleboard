@@ -3,38 +3,32 @@ package com.battleBoard.battleBoardGame.battleStates;
 import java.util.List;
 import java.util.Random;
 
-import com.battleBoard.battleBoardGame.Assets;
-import com.battleBoard.battleBoardGame.UnitAction;
-import com.battleBoard.battleBoardGame.ValidMove;
-import com.battleBoard.battleBoardGame.Screens.GameScreen;
-import com.battleBoard.battleBoardGame.Units.Unit;
-import com.battleBoard.framework.implementation.Graphics;
-
 import android.view.MotionEvent;
 
-public class TickingState implements IBattleState {
+import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.IBattleScreen;
+import com.battleBoard.battleBoardGame.UnitAction;
+import com.battleBoard.battleBoardGame.ValidMove;
+import com.battleBoard.battleBoardGame.Units.Unit;
 
-	private GameScreen gameScreen = null;
-	private Graphics graphics = null;
+public class TickingState extends BattleState {
 
-	public TickingState(GameScreen gameScreen, Graphics graphics, UnitAction unitAction) {
-		this.gameScreen = gameScreen;
-		this.graphics = graphics;
+	public TickingState(IBattleScreen battleScreen, UnitAction unitAction) {
+		super(battleScreen);
 
 		if (unitAction.getType() == UnitAction.Type.move) {
-			gameScreen.MoveUnit(unitAction.getUnit(), unitAction.getTargetPoint());
-		}
-		else if(unitAction.getType() == UnitAction.Type.castSkillTargetPoint) {
-			Unit targetUnit = gameScreen.getBoard().getBlock(unitAction.getTargetPoint().x, unitAction.getTargetPoint().y).getUnit();
-			if(targetUnit != null){
-				gameScreen.DamageUnit(targetUnit, unitAction.getSkill().getDamage());
+			world.MoveUnit(unitAction.getUnit(), unitAction.getTargetPoint());
+		} else if (unitAction.getType() == UnitAction.Type.castSkillTargetPoint) {
+			Unit targetUnit = world.getBoard().getBlock(unitAction.getTargetPoint().x, unitAction.getTargetPoint().y).getUnit();
+			if (targetUnit != null) {
+				world.DamageUnit(targetUnit, unitAction.getSkill().getDamage());
 			}
 		}
 
-		for (Unit whichUnit : gameScreen.getEnemy().getUnits()) {
-			List<ValidMove> moves = gameScreen.generateValidMoves(whichUnit);
+		for (Unit whichUnit : world.getEnemy().getUnits()) {
+			List<ValidMove> moves = world.generateValidMoves(whichUnit);
 			if (moves.size() > 0) {
-				gameScreen.MoveUnit(whichUnit, moves.get((new Random()).nextInt(moves.size())).getBlockPosition());
+				world.MoveUnit(whichUnit, moves.get((new Random()).nextInt(moves.size())).getBlockPosition());
 				break;
 			}
 		}
@@ -43,22 +37,22 @@ public class TickingState implements IBattleState {
 
 	@Override
 	public void update(float deltaTime) {
-		gameScreen.setState(new NormalState(gameScreen, graphics));
+		battleScreen.setState(new NormalState(battleScreen));
 	}
 
 	@Override
 	public void onTouchEvent(MotionEvent event) {
-		
+
 	}
 
 	@Override
 	public void paint() {
 		graphics.drawBackground(Assets.backgroundImg);
 
-		gameScreen.getBoard().draw();
+		world.getBoard().draw();
 
-		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
-		gameScreen.drawPlayerUnits(gameScreen.getUser());
+		battleScreen.drawPlayerUnits(world.getEnemy());
+		battleScreen.drawPlayerUnits(world.getUser());
 
 	}
 

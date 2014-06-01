@@ -1,22 +1,17 @@
 package com.battleBoard.battleBoardGame.battleStates;
 
-import com.battleBoard.battleBoardGame.Assets;
-import com.battleBoard.battleBoardGame.Screens.GameScreen;
-import com.battleBoard.battleBoardGame.Units.Unit;
-import com.battleBoard.framework.implementation.Graphics;
-
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
-public class NormalState implements IBattleState {
+import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.IBattleScreen;
+import com.battleBoard.battleBoardGame.Units.Unit;
 
-	private GameScreen gameScreen = null;
-	private Graphics graphics = null;
+public class NormalState extends BattleState {
 
-	public NormalState(GameScreen gameScreen, Graphics graphics) {
-		this.gameScreen = gameScreen;
-		this.graphics = graphics;
+	public NormalState(IBattleScreen battleScreen) {
+		super(battleScreen);
 	}
 
 	@Override
@@ -27,12 +22,12 @@ public class NormalState implements IBattleState {
 	@Override
 	public void onTouchEvent(MotionEvent event) {
 		PointF screenPosition = new PointF(event.getX(), event.getY());
-		Point blockPosition = gameScreen.screenToBlockPosition(event.getX(), event.getY());
+		Point blockPosition = battleScreen.screenToBlockPosition(event.getX(), event.getY());
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			Unit unitHere = gameScreen.getBoard().getBlock(blockPosition).getUnit();
+			Unit unitHere = world.getBoard().getBlock(blockPosition).getUnit();
 			if (unitHere != null) {
-				gameScreen.setState(new DraggingUnitState(gameScreen, graphics, screenPosition, unitHere, gameScreen.generateValidMoves(unitHere)));
+				battleScreen.setState(new DraggingUnitState(battleScreen, screenPosition, unitHere, world.generateValidMoves(unitHere)));
 			}
 		}
 	}
@@ -41,10 +36,10 @@ public class NormalState implements IBattleState {
 	public void paint() {
 		graphics.drawBackground(Assets.backgroundImg);
 
-		gameScreen.getBoard().draw();
+		world.getBoard().draw();
 
-		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
-		gameScreen.drawPlayerUnits(gameScreen.getUser());
+		battleScreen.drawPlayerUnits(world.getEnemy());
+		battleScreen.drawPlayerUnits(world.getUser());
 	}
 
 	@Override
