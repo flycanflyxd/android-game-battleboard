@@ -12,7 +12,7 @@ public abstract class Screen {
 
 	public abstract void update(float deltaTime);
 
-	public void paint(float deltaTime) {
+	public void paint() {
 		needRedraw = false;
 	}
 

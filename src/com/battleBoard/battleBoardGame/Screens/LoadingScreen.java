@@ -29,7 +29,7 @@ public class LoadingScreen extends Screen {
 	}
 
 	@Override
-	public void paint(float deltaTime) {
+	public void paint() {
 		Graphics g = game.getGraphics();
 		g.drawBackground(Assets.splashImg);
 	}

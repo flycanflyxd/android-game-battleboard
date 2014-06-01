@@ -55,7 +55,7 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable, Surf
 			currentScreen = game.getCurrentScreen();
 			currentScreen.update(deltaTime);
 			if (currentScreen.NeedRedraw()) {
-				currentScreen.paint(deltaTime);
+				currentScreen.paint();
 				canvas = holder.lockCanvas();
 				if (canvas != null) {
 					canvas.getClipBounds(dstRect);
