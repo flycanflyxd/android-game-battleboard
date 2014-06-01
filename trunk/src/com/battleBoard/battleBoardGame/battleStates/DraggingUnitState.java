@@ -44,20 +44,6 @@ public class DraggingUnitState implements IBattleState {
 
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (draggingUnit.getBlockPosition().equals(blockPosition)) {
-
-				// 新增技能 按鈕
-				// Button abilityButton = (Button)
-				// LayoutInflater.from((Activity)
-				// game).inflate(R.layout.button_test, abilityButtons, false);
-				// abilityButton.setOnClickListener(new View.OnClickListener() {
-				// @Override
-				// public void onClick(View view) {
-				// // 進入施展技能狀態
-				// }
-				// });
-				// abilityButtons.addView(abilityButton, 0);
-
-				// validMoves.clear();
 				gameScreen.setState(new SelectingUnitState(gameScreen, graphics, draggingUnit));
 			} else {
 				boolean collide = true;
@@ -78,10 +64,6 @@ public class DraggingUnitState implements IBattleState {
 						}
 					}
 				}
-
-				// 移除所有技能按鈕
-				// abilityButtons.removeAllViews();
-
 				gameScreen.setState(new NormalState(gameScreen, graphics));
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -93,18 +75,14 @@ public class DraggingUnitState implements IBattleState {
 	public void paint() {
 		Matrix matrix = new Matrix();
 		float blockWidth = gameScreen.getBlockWidth();
-		
+
 		graphics.drawBackground(Assets.backgroundImg);
-		
+
 		gameScreen.getBoard().draw();
 
 		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
 		for (ValidMove whichValidMove : tempValidMoves) {
-			matrix.reset();
-			matrix.setScale(blockWidth / whichValidMove.getImage().getWidth(), blockWidth / whichValidMove.getImage().getHeight());
-			PointF p = gameScreen.blockToScreenPosition(whichValidMove.getBlockPosition());
-			matrix.postTranslate(p.x, p.y);
-			graphics.drawBitmap(whichValidMove.getImage(), matrix, null);
+			gameScreen.drawSprite(whichValidMove);
 		}
 
 		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
@@ -114,6 +92,11 @@ public class DraggingUnitState implements IBattleState {
 		matrix.setScale(blockWidth / draggingUnit.getImage().getWidth(), blockWidth / draggingUnit.getImage().getHeight());
 		matrix.postTranslate(draggingScreenPosition.x - 0.5f * blockWidth, draggingScreenPosition.y - 0.5f * blockWidth);
 		graphics.drawBitmap(draggingUnit.getImage(), matrix, null);
+
+	}
+
+	@Override
+	public void Dispose() {
 
 	}
 

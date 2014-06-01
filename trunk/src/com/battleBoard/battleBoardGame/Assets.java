@@ -8,6 +8,7 @@ public class Assets {
 	public static Bitmap magic;
 	public static Bitmap unit1;
 	public static Bitmap selectCircle;
+	public static Bitmap skillTarget;
 
 	public static Music theme;
 

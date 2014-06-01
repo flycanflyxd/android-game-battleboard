@@ -42,7 +42,7 @@ public class Board {
 		Block block = blocks[blockPosition.x][blockPosition.y];
 		return block.getUnit() == null && block.isWalkable();
 	}
-	
+
 	public Block getBlock(int col, int row) {
 		return blocks[col][row];
 	}

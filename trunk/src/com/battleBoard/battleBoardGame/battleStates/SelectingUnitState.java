@@ -1,25 +1,49 @@
 package com.battleBoard.battleBoardGame.battleStates;
 
+import android.app.Activity;
+import android.graphics.Point;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
 import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.R;
+import com.battleBoard.battleBoardGame.ValidMove;
 import com.battleBoard.battleBoardGame.Screens.GameScreen;
 import com.battleBoard.battleBoardGame.Units.Unit;
+import com.battleBoard.battleBoardGame.skills.Skill;
 import com.battleBoard.framework.implementation.Graphics;
-
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.view.MotionEvent;
 
 public class SelectingUnitState implements IBattleState {
 
-	private GameScreen gameScreen = null;
+	private final GameScreen gameScreen;
 	private Graphics graphics = null;
 	private Unit selectingUnit = null;
+	private ViewGroup abilityButtons;
 
-	public SelectingUnitState(GameScreen gameScreen, Graphics graphics, Unit selectingUnit) {
+	public SelectingUnitState(final GameScreen gameScreen, final Graphics graphics, final Unit selectingUnit) {
 		this.gameScreen = gameScreen;
 		this.graphics = graphics;
 		this.selectingUnit = selectingUnit;
+
+		abilityButtons = (ViewGroup) (((Activity) gameScreen.getGame()).findViewById(R.id.buttons));
+
+		// 新增技能 按鈕
+		for (final Skill whichSkill : selectingUnit.getSkills()) {
+			Button abilityButton = (Button) LayoutInflater.from((Activity) gameScreen.getGame()).inflate(R.layout.button_test, abilityButtons, false);
+			abilityButton.setText(whichSkill.getName());
+			abilityButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					gameScreen.setState(new ChooseSkillTargetState(gameScreen, graphics, selectingUnit, whichSkill, abilityButtons));
+					gameScreen.setNeedRedraw(true);
+				}
+			});
+			abilityButtons.addView(abilityButton);
+		}
+
 	}
 
 	@Override
@@ -33,7 +57,7 @@ public class SelectingUnitState implements IBattleState {
 
 		if (!selectingUnit.getBlockPosition().equals(blockPosition)) {
 
-			// abilityButtons.removeAllViews();
+			abilityButtons.removeAllViews();
 			gameScreen.setState(new NormalState(gameScreen, graphics));
 			gameScreen.onTouchEvent(event);
 		}
@@ -43,18 +67,16 @@ public class SelectingUnitState implements IBattleState {
 	public void paint() {
 		graphics.drawBackground(Assets.backgroundImg);
 
-		Matrix matrix = new Matrix();
 		gameScreen.getBoard().draw();
 
 		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
 		gameScreen.drawPlayerUnits(gameScreen.getUser());
 
-		matrix.reset();
-		matrix.setScale(gameScreen.getBlockWidth() / Assets.selectCircle.getWidth(), gameScreen.getBlockWidth() / Assets.selectCircle.getHeight());
-		PointF circlePosition = gameScreen.blockToScreenPosition(selectingUnit.getBlockPosition());
-		matrix.postTranslate(circlePosition.x, circlePosition.y);
-		graphics.drawBitmap(Assets.selectCircle, matrix, null);
-
+		gameScreen.drawSprite(new ValidMove(Assets.selectCircle, selectingUnit.getBlockPosition().x, selectingUnit.getBlockPosition().y));
 	}
 
+	@Override
+	public void Dispose() {
+		abilityButtons.removeAllViews();
+	}
 }
