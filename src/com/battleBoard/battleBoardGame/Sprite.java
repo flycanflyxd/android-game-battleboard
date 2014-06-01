@@ -5,6 +5,10 @@ import android.graphics.Point;
 public abstract class Sprite {
 	private Point blockPosition;
 
+	public Sprite(Point blockPosition) {
+		this.blockPosition = blockPosition;
+	}
+	
 	public Sprite(int x, int y) {
 		blockPosition = new Point();
 		blockPosition.x = x;
