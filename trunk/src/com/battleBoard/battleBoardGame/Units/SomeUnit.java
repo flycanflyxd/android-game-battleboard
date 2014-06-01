@@ -6,8 +6,8 @@ import android.graphics.Point;
 
 public class SomeUnit extends Unit {
 
-	public SomeUnit(int x, int y) {
-		super(x, y);
+	public SomeUnit(Point BlockPosition) {
+		super(BlockPosition);
 		image = Assets.characterImg;
 		validMoveDirections.add(new Point(1, 0));
 		validMoveDirections.add(new Point(0, 1));

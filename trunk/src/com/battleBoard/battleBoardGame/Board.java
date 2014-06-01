@@ -1,31 +1,44 @@
 package com.battleBoard.battleBoardGame;
 
-public class Board {
-	private final int bWidth = Assets.blockImg.getWidth();
-	private final int bHeight = Assets.blockImg.getHeight();
-	private final int leftBound = 80;
-	private final int upBound = 50;
-	private final int rowSize = 5;
-	private final int colSize = 5;
-	private Block[][] blocks = new Block[rowSize][colSize];
+import com.battleBoard.battleBoardGame.Units.Unit;
 
-	public Board() {
-		for (int i = 0; i < rowSize; ++i) {
-			for (int j = 0; j < colSize; ++j) {
-				blocks[i][j] = new Block(leftBound + bHeight * i, upBound + bWidth * j);
+import android.graphics.Point;
+
+public class Board {
+	private Block[][] blocks = null;
+	private Point size = null;
+
+	public Board(int width, int height) {
+		size = new Point(width, height);
+		blocks = new Block[height][width];
+		for (int whichRow = 0; whichRow < height; whichRow++) {
+			for (int whichCol = 0; whichCol < width; whichCol++){
+				blocks[whichCol][whichRow] = new Block(whichCol, whichRow, Assets.blockImg, true);
 			}
 		}
 	}
 
-	public Block getBlock(int i, int j) {
-		return blocks[i][j];
+	public Block getBlock(int col, int row) {
+		return blocks[col][row];
 	}
-
-	public int getRowSize() {
-		return rowSize;
+	
+	public Block getBlock(Point point) {
+		return blocks[point.x][point.y];
 	}
-
-	public int getColSize() {
-		return colSize;
+	
+	public int getWidth(){
+		return size.x;
+	}
+	
+	public int getHeight(){
+		return size.y;
+	}
+	
+	public void UnitGetIn(Unit unit, Point blockPosition) {
+		blocks[blockPosition.x][blockPosition.y].AddUnit(unit);
+	}
+	
+	public void UnitGetOut(Point blockPosition) {
+		blocks[blockPosition.x][blockPosition.y].removeUnit();
 	}
 }

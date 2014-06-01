@@ -1,29 +1,26 @@
 package com.battleBoard.battleBoardGame.Units;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.battleBoard.battleBoardGame.Sprite;
+import com.battleBoard.battleBoardGame.skills.Skill;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.PointF;
 
 public abstract class Unit extends Sprite {
-	private PointF screenPosition = new PointF(0.0f, 0.0f);
 	protected Bitmap image = null;
-	protected ArrayList<Point> validMoveDirections = new ArrayList<Point>();
+	protected List<Point> validMoveDirections = new ArrayList<Point>();
 	protected float hp = 0.0f;
+	protected List<Skill> skills = new ArrayList<Skill>();
 
+	public Unit(Point blockPosition) {
+		super(blockPosition.x, blockPosition.y);
+	}
+	
 	public Unit(int x, int y) {
 		super(x, y);
-	}
-
-	public PointF getScreenPosition() {
-		return screenPosition;
-	}
-
-	public void setScreenPosition(PointF screenPosition) {
-		this.screenPosition = screenPosition;
 	}
 
 	public Bitmap getImage() {
