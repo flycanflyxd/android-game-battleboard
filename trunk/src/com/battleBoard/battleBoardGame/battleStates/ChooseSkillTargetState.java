@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.UnitAction;
 import com.battleBoard.battleBoardGame.ValidMove;
 import com.battleBoard.battleBoardGame.Screens.GameScreen;
 import com.battleBoard.battleBoardGame.Units.Unit;
@@ -56,8 +57,7 @@ public class ChooseSkillTargetState implements IBattleState {
 		Point blockPosition = gameScreen.screenToBlockPosition(event.getX(), event.getY());
 
 		if (validTargetTable[blockPosition.x][blockPosition.y]) {
-			// gameScreen.setState(new TickingState());
-			gameScreen.setState(new NormalState(gameScreen, graphics));
+			gameScreen.setState(new TickingState(gameScreen, graphics, new UnitAction(caster, UnitAction.Type.castSkillTargetPoint, blockPosition, skill)));
 		} else {
 			gameScreen.setState(new NormalState(gameScreen, graphics));
 		}

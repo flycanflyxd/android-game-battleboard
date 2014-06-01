@@ -20,4 +20,8 @@ public class Player {
 	public List<Unit> getUnits() {
 		return units;
 	}
+	
+	public void removeUnit(Unit unit) {
+		units.remove(unit);
+	}
 }
