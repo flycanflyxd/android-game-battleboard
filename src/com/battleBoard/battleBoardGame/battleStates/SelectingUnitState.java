@@ -1,5 +1,8 @@
 package com.battleBoard.battleBoardGame.battleStates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.graphics.Point;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.widget.Button;
 
 import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.battleBoardGame.R;
+import com.battleBoard.battleBoardGame.UnitAction;
 import com.battleBoard.battleBoardGame.ValidMove;
 import com.battleBoard.battleBoardGame.Screens.GameScreen;
 import com.battleBoard.battleBoardGame.Units.Unit;
@@ -22,13 +26,14 @@ public class SelectingUnitState implements IBattleState {
 	private Graphics graphics = null;
 	private Unit selectingUnit = null;
 	private ViewGroup abilityButtons;
+	private List<ValidMove> validMoves = null;
 
-	public SelectingUnitState(final GameScreen gameScreen, final Graphics graphics, final Unit selectingUnit) {
+	public SelectingUnitState(final GameScreen gameScreen, final Graphics graphics, final Unit selectingUnit, List<ValidMove> validmoves) {
 		this.gameScreen = gameScreen;
 		this.graphics = graphics;
 		this.selectingUnit = selectingUnit;
-
 		abilityButtons = (ViewGroup) (((Activity) gameScreen.getGame()).findViewById(R.id.buttons));
+		this.validMoves = validmoves;
 
 		// 新增技能 按鈕
 		for (final Skill whichSkill : selectingUnit.getSkills()) {
@@ -57,9 +62,20 @@ public class SelectingUnitState implements IBattleState {
 
 		if (!selectingUnit.getBlockPosition().equals(blockPosition)) {
 
-			abilityButtons.removeAllViews();
-			gameScreen.setState(new NormalState(gameScreen, graphics));
-			gameScreen.onTouchEvent(event);
+			boolean collide = true;
+			for (ValidMove whichMove : validMoves) {
+				if (whichMove.getBlockPosition().equals(blockPosition)) {
+					collide = false;
+					break;
+				}
+			}
+			if (!collide) {
+				gameScreen.setState(new TickingState(gameScreen, graphics, new UnitAction(selectingUnit, UnitAction.Type.move, blockPosition)));
+			} else {
+				abilityButtons.removeAllViews();
+				gameScreen.setState(new NormalState(gameScreen, graphics));
+				gameScreen.onTouchEvent(event);
+			}
 		}
 	}
 
@@ -69,6 +85,11 @@ public class SelectingUnitState implements IBattleState {
 
 		gameScreen.getBoard().draw();
 
+		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
+		for (ValidMove whichValidMove : tempValidMoves) {
+			gameScreen.drawSprite(whichValidMove);
+		}
+		
 		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
 		gameScreen.drawPlayerUnits(gameScreen.getUser());
 

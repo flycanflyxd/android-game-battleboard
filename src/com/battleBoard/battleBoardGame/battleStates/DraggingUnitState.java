@@ -2,7 +2,6 @@ package com.battleBoard.battleBoardGame.battleStates;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -10,6 +9,7 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Assets;
+import com.battleBoard.battleBoardGame.UnitAction;
 import com.battleBoard.battleBoardGame.ValidMove;
 import com.battleBoard.battleBoardGame.Screens.GameScreen;
 import com.battleBoard.battleBoardGame.Units.Unit;
@@ -23,13 +23,12 @@ public class DraggingUnitState implements IBattleState {
 	private PointF draggingScreenPosition = new PointF(0.0f, 0.0f);
 	private List<ValidMove> validMoves = null;
 
-	public DraggingUnitState(GameScreen gameScreen, Graphics graphics, PointF touchScreenPosition, Unit touchUnit, List<ValidMove> validmoves) {
+	public DraggingUnitState(GameScreen gameScreen, Graphics graphics, PointF touchScreenPosition, Unit touchUnit, List<ValidMove> validMoves) {
 		this.gameScreen = gameScreen;
 		this.graphics = graphics;
 		this.draggingScreenPosition = touchScreenPosition;
 		this.draggingUnit = touchUnit;
-		this.validMoves = validmoves;
-
+		this.validMoves = validMoves;
 	}
 
 	@Override
@@ -44,7 +43,7 @@ public class DraggingUnitState implements IBattleState {
 
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (draggingUnit.getBlockPosition().equals(blockPosition)) {
-				gameScreen.setState(new SelectingUnitState(gameScreen, graphics, draggingUnit));
+				gameScreen.setState(new SelectingUnitState(gameScreen, graphics, draggingUnit, validMoves));
 			} else {
 				boolean collide = true;
 				for (ValidMove whichMove : validMoves) {
@@ -54,17 +53,10 @@ public class DraggingUnitState implements IBattleState {
 					}
 				}
 				if (!collide) {
-					gameScreen.MoveUnit(draggingUnit, blockPosition);
-
-					for (Unit whichUnit : gameScreen.getEnemy().getUnits()) {
-						List<ValidMove> moves = gameScreen.generateValidMoves(whichUnit);
-						if (moves.size() > 0) {
-							gameScreen.MoveUnit(whichUnit, moves.get((new Random()).nextInt(moves.size())).getBlockPosition());
-							break;
-						}
-					}
+					gameScreen.setState(new TickingState(gameScreen, graphics, new UnitAction(draggingUnit, UnitAction.Type.move, blockPosition)));
+				} else {
+					gameScreen.setState(new NormalState(gameScreen, graphics));
 				}
-				gameScreen.setState(new NormalState(gameScreen, graphics));
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 			draggingScreenPosition = screenPosition;
@@ -73,9 +65,6 @@ public class DraggingUnitState implements IBattleState {
 
 	@Override
 	public void paint() {
-		Matrix matrix = new Matrix();
-		float blockWidth = gameScreen.getBlockWidth();
-
 		graphics.drawBackground(Assets.backgroundImg);
 
 		gameScreen.getBoard().draw();
@@ -88,7 +77,8 @@ public class DraggingUnitState implements IBattleState {
 		gameScreen.drawPlayerUnits(gameScreen.getEnemy());
 		gameScreen.drawPlayerUnits(gameScreen.getUser(), draggingUnit);
 
-		matrix.reset();
+		Matrix matrix = new Matrix();
+		float blockWidth = gameScreen.getBlockWidth();
 		matrix.setScale(blockWidth / draggingUnit.getImage().getWidth(), blockWidth / draggingUnit.getImage().getHeight());
 		matrix.postTranslate(draggingScreenPosition.x - 0.5f * blockWidth, draggingScreenPosition.y - 0.5f * blockWidth);
 		graphics.drawBitmap(draggingUnit.getImage(), matrix, null);

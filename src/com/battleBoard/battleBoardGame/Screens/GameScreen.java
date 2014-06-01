@@ -45,15 +45,15 @@ public class GameScreen extends Screen {
 
 		board = new Board(boardSize.x, boardSize.y, blockWidth, startY, game.getGraphics());
 
-		Unit unit = new SomeUnit(new Point(0, 0));
+		Unit unit = new SomeUnit(new Point(0, 0), user);
 		user.addUnit(unit);
 		board.UnitGetIn(unit, unit.getBlockPosition());
 
-		unit = new SomeUnit(new Point(1, 1));
+		unit = new SomeUnit(new Point(1, 1), user);
 		user.addUnit(unit);
 		board.UnitGetIn(unit, unit.getBlockPosition());
 
-		unit = new AnotherUnit(4, 4);
+		unit = new AnotherUnit(new Point(4, 4), enemy);
 		enemy.addUnit(unit);
 		board.UnitGetIn(unit, unit.getBlockPosition());
 
@@ -84,6 +84,14 @@ public class GameScreen extends Screen {
 		unit.setBlockPosition(newBlockPosition);
 	}
 
+	public void DamageUnit(Unit unitUnderDamage, float damageAmount) {
+		unitUnderDamage.damage(60.0f);
+		if(unitUnderDamage.isDead()) {
+			unitUnderDamage.getOwner().removeUnit(unitUnderDamage);
+			board.getBlock(unitUnderDamage.getBlockPosition()).removeUnit();
+		}
+	}
+	
 	// TODO 移到適當地方
 	public List<ValidMove> generateValidMoves(Unit whichUnit) {
 		List<ValidMove> answer = new ArrayList<ValidMove>();
