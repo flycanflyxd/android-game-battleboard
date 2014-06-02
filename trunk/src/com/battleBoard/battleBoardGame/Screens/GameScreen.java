@@ -63,7 +63,7 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 		world = new World(this, board, user, enemy);
 
 		setState(new NormalState(this));
-		
+
 		floatTextManager = new FloatTextManager(this);
 	}
 
@@ -76,12 +76,10 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 	@Override
 	public void onTouchEvent(MotionEvent event) {
 		state.onTouchEvent(event);
-		this.setNeedRedraw(true);
 	}
 
 	@Override
 	public void paint() {
-		super.paint();
 		state.paint();
 
 		Paint paint = new Paint();
@@ -90,10 +88,8 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 
 		game.getGraphics().drawText("state=" + state.toString(), 0, 100, paint);
-		
-		floatTextManager.paint();
 
-		//this.setNeedRedraw(false);
+		floatTextManager.paint();
 	}
 
 	@Override
@@ -157,8 +153,6 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 		if (oldState != null) {
 			oldState.Dispose();
 		}
-
-		this.setNeedRedraw(true);
 	}
 
 	@Override
@@ -187,7 +181,7 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 		screenPosition.x += blockWidth * 0.3f;
 		floatTextManager.createFloatText(new FloatText(text, screenPosition));
 	}
-	
+
 	@Override
 	public void pause() {
 

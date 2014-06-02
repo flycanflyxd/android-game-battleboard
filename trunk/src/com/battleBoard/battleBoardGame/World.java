@@ -3,10 +3,7 @@ package com.battleBoard.battleBoardGame;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PointF;
 
 import com.battleBoard.battleBoardGame.Units.Unit;
 
@@ -16,7 +13,7 @@ public class World {
 	private Board board = null;
 	private Player user = null;
 	private Player enemy = null;
-	
+
 	public World(IBattleScreen battleScreen, Board board, Player user, Player enemy) {
 		this.battleScreen = battleScreen;
 		this.board = board;
@@ -48,7 +45,7 @@ public class World {
 			unitUnderDamage.getOwner().removeUnit(unitUnderDamage);
 			board.getBlock(unitUnderDamage.getBlockPosition()).removeUnit();
 		}
-		
+
 		battleScreen.createFloatText(String.valueOf(damageAmount), unitUnderDamage.getBlockPosition());
 	}
 

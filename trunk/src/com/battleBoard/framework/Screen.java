@@ -4,7 +4,6 @@ import android.view.MotionEvent;
 
 public abstract class Screen {
 	protected final Game game;
-	private volatile boolean needRedraw = true;
 
 	public Screen(Game game) {
 		this.game = game;
@@ -12,9 +11,7 @@ public abstract class Screen {
 
 	public abstract void update(float deltaTime);
 
-	public void paint() {
-		needRedraw = false;
-	}
+	public abstract void paint();
 
 	public abstract void pause();
 
@@ -25,12 +22,4 @@ public abstract class Screen {
 	public abstract void backButton();
 
 	public abstract void onTouchEvent(MotionEvent motionEvent);
-
-	public void setNeedRedraw(boolean flag) {
-		needRedraw = flag;
-	}
-
-	public boolean NeedRedraw() {
-		return needRedraw;
-	}
 }

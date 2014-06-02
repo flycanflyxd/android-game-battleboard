@@ -3,17 +3,16 @@ package com.battleBoard.framework.implementation;
 import com.battleBoard.framework.Game;
 import com.battleBoard.framework.Screen;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-@SuppressLint("ViewConstructor")
 public class AndroidFastRenderView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
 
 	SurfaceView surfaceView = null;
@@ -47,22 +46,16 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable, Surf
 		while (running) {
 			float deltaTime = (System.nanoTime() - startTime) * 0.000001f;
 			startTime = System.nanoTime();
-
-//			if (deltaTime > 3.15f) {
-//				deltaTime = 3.15f;
-//			}
+			Log.d("XD", String.valueOf(1000.0f / deltaTime));
 
 			currentScreen = game.getCurrentScreen();
 			currentScreen.update(deltaTime);
-			//if (currentScreen.NeedRedraw()) {
-			if(true) {
-				currentScreen.paint();
-				canvas = holder.lockCanvas();
-				if (canvas != null) {
-					canvas.getClipBounds(dstRect);
-					canvas.drawBitmap(framebuffer, null, dstRect, null);
-					holder.unlockCanvasAndPost(canvas);
-				}
+			currentScreen.paint();
+			canvas = holder.lockCanvas();
+			if (canvas != null) {
+				canvas.getClipBounds(dstRect);
+				canvas.drawBitmap(framebuffer, null, dstRect, null);
+				holder.unlockCanvasAndPost(canvas);
 			}
 		}
 	}
@@ -82,7 +75,6 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable, Surf
 	@Override
 	public boolean onTouchEvent(MotionEvent motionEvent) {
 		game.getCurrentScreen().onTouchEvent(motionEvent);
-		game.getCurrentScreen().setNeedRedraw(true);
 		return true;
 	}
 
