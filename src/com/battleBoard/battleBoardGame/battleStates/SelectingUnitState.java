@@ -85,7 +85,7 @@ public class SelectingUnitState extends BattleState {
 		battleScreen.drawPlayerUnits(world.getEnemy());
 		battleScreen.drawPlayerUnits(world.getUser());
 
-		battleScreen.drawSprite(new ValidMove(Assets.selectCircle, selectingUnit.getBlockPosition().x, selectingUnit.getBlockPosition().y));
+		battleScreen.drawSprite(new ValidMove(Assets.selectCircle, selectingUnit.getBlockPosition()));
 	}
 
 	@Override

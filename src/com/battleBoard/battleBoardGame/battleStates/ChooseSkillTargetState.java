@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -30,15 +29,22 @@ public class ChooseSkillTargetState extends BattleState {
 		this.abilityButtons = abilityButtons;
 		validTargetTable = new Boolean[world.getBoard().getWidth()][world.getBoard().getHeight()];
 
-		int distance = skill.getCastDistance();
+		List<Point> validPoints = new ArrayList<Point>();
+		skill.getValidPoints(validPoints, caster, world);
+
 		for (int whichRow = 0; whichRow < world.getBoard().getHeight(); whichRow++) {
 			for (int whichCol = 0; whichCol < world.getBoard().getWidth(); whichCol++) {
-				if (PointF.length(whichCol - caster.getX(), whichRow - caster.getY()) <= distance) {
-					validTargetShadows.add(new ValidMove(Assets.skillTarget, whichCol, whichRow));
-					validTargetTable[whichCol][whichRow] = true;
-				} else {
-					validTargetTable[whichCol][whichRow] = false;
-				}
+				validTargetTable[whichCol][whichRow] = false;
+			}
+		}
+		
+		if (skill.getCastType() == Skill.CastType.immediate) {
+			battleScreen.setState(new TickingState(battleScreen, new UnitAction(caster, UnitAction.Type.castSkillTargetPoint, caster.getBlockPosition(), skill)));
+		} else {
+			
+			for (Point whichValidPoint : validPoints) {
+				validTargetShadows.add(new ValidMove(Assets.skillTarget, whichValidPoint));
+				validTargetTable[whichValidPoint.x][whichValidPoint.y] = true;
 			}
 		}
 	}
@@ -73,7 +79,7 @@ public class ChooseSkillTargetState extends BattleState {
 			battleScreen.drawSprite(whichValidMove);
 		}
 
-		battleScreen.drawSprite(new ValidMove(Assets.selectCircle, caster.getBlockPosition().x, caster.getBlockPosition().y));
+		battleScreen.drawSprite(new ValidMove(Assets.selectCircle, caster.getBlockPosition()));
 	}
 
 	@Override

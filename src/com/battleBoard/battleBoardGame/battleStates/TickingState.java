@@ -19,10 +19,7 @@ public class TickingState extends BattleState {
 		if (unitAction.getType() == UnitAction.Type.move) {
 			world.MoveUnit(unitAction.getUnit(), unitAction.getTargetPoint());
 		} else if (unitAction.getType() == UnitAction.Type.castSkillTargetPoint) {
-			Unit targetUnit = world.getBoard().getBlock(unitAction.getTargetPoint().x, unitAction.getTargetPoint().y).getUnit();
-			if (targetUnit != null) {
-				world.DamageUnit(targetUnit, unitAction.getSkill().getDamage());
-			}
+			unitAction.getSkill().doEffect(unitAction.getUnit(), unitAction.getTargetPoint(), world);
 		}
 
 		for (Unit whichUnit : world.getEnemy().getUnits()) {

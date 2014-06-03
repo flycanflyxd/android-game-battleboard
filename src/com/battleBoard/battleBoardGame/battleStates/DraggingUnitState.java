@@ -1,5 +1,6 @@
 package com.battleBoard.battleBoardGame.battleStates;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Matrix;
@@ -67,9 +68,8 @@ public class DraggingUnitState extends BattleState {
 
 		world.getBoard().draw();
 
-		// List<ValidMove> tempValidMoves = new
-		// ArrayList<ValidMove>(validMoves);
-		for (ValidMove whichValidMove : validMoves) {
+		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
+		for (ValidMove whichValidMove : tempValidMoves) {
 			battleScreen.drawSprite(whichValidMove);
 		}
 
