@@ -1,6 +1,5 @@
 package com.battleBoard.battleBoardGame.battleStates;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -77,8 +76,9 @@ public class SelectingUnitState extends BattleState {
 
 		world.getBoard().draw();
 
-		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
-		for (ValidMove whichValidMove : tempValidMoves) {
+		// List<ValidMove> tempValidMoves = new
+		// ArrayList<ValidMove>(validMoves);
+		for (ValidMove whichValidMove : validMoves) {
 			battleScreen.drawSprite(whichValidMove);
 		}
 

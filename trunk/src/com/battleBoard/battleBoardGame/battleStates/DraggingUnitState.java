@@ -1,6 +1,5 @@
 package com.battleBoard.battleBoardGame.battleStates;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Matrix;
@@ -20,6 +19,8 @@ public class DraggingUnitState extends BattleState {
 	private Unit draggingUnit = null;
 	private PointF draggingScreenPosition = new PointF(0.0f, 0.0f);
 	private List<ValidMove> validMoves = null;
+	Matrix matrix = new Matrix();
+	Paint paint = new Paint();
 
 	public DraggingUnitState(IBattleScreen battleScreen, PointF touchScreenPosition, Unit touchUnit, List<ValidMove> validMoves) {
 		super(battleScreen);
@@ -66,17 +67,16 @@ public class DraggingUnitState extends BattleState {
 
 		world.getBoard().draw();
 
-		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validMoves);
-		for (ValidMove whichValidMove : tempValidMoves) {
+		// List<ValidMove> tempValidMoves = new
+		// ArrayList<ValidMove>(validMoves);
+		for (ValidMove whichValidMove : validMoves) {
 			battleScreen.drawSprite(whichValidMove);
 		}
 
 		battleScreen.drawPlayerUnits(world.getEnemy());
 		battleScreen.drawPlayerUnits(world.getUser());
 
-		Paint paint = new Paint();
 		paint.setAlpha(150);
-		Matrix matrix = new Matrix();
 		float blockWidth = battleScreen.getBlockWidth();
 		matrix.setScale(blockWidth / draggingUnit.getImage().getWidth(), blockWidth / draggingUnit.getImage().getHeight());
 		matrix.postTranslate(draggingScreenPosition.x - 0.5f * blockWidth, draggingScreenPosition.y - 0.5f * blockWidth);
