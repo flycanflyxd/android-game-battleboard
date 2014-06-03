@@ -15,7 +15,8 @@ public class FloatTextManager {
 	}
 
 	public void update(float deltaTime) {
-		for (FloatText whichtext : floatTexts) {
+		List<FloatText> floatTextsCopy = new LinkedList<FloatText>(floatTexts);
+		for (FloatText whichtext : floatTextsCopy) {
 			whichtext.update(deltaTime);
 			if (whichtext.isDead()) {
 				floatTexts.remove(whichtext);
@@ -25,7 +26,8 @@ public class FloatTextManager {
 
 	public void paint() {
 		Graphics graphics = battleScreen.getGraphics();
-		for (FloatText whichtext : floatTexts) {
+		List<FloatText> floatTextsCopy = new LinkedList<FloatText>(floatTexts);
+		for (FloatText whichtext : floatTextsCopy) {
 			graphics.drawText(whichtext.getText(), whichtext.getScreenPosition().x, whichtext.getScreenPosition().y, whichtext.getPaint());
 		}
 	}

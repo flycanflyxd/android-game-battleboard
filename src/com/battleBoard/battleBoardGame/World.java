@@ -40,7 +40,7 @@ public class World {
 	}
 
 	public void DamageUnit(Unit unitUnderDamage, float damageAmount) {
-		unitUnderDamage.damage(damageAmount);
+		unitUnderDamage.damaged(damageAmount);
 		if (unitUnderDamage.isDead()) {
 			unitUnderDamage.getOwner().removeUnit(unitUnderDamage);
 			board.getBlock(unitUnderDamage.getBlockPosition()).removeUnit();

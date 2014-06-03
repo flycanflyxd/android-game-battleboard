@@ -1,17 +1,16 @@
 package com.battleBoard.framework.implementation;
 
-import com.battleBoard.framework.Game;
-import com.battleBoard.framework.Screen;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.battleBoard.framework.Game;
+import com.battleBoard.framework.Screen;
 
 public class AndroidFastRenderView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
 
@@ -46,7 +45,7 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable, Surf
 		while (running) {
 			float deltaTime = (System.nanoTime() - startTime) * 0.000001f;
 			startTime = System.nanoTime();
-			Log.d("XD", String.valueOf(1000.0f / deltaTime));
+			// Log.d("XD", String.valueOf(1000.0f / deltaTime));
 
 			currentScreen = game.getCurrentScreen();
 			currentScreen.update(deltaTime);
