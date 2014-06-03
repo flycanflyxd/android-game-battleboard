@@ -4,7 +4,7 @@ import android.graphics.Point;
 
 import com.battleBoard.battleBoardGame.Assets;
 import com.battleBoard.battleBoardGame.Player;
-import com.battleBoard.battleBoardGame.skills.SomeSkill;
+import com.battleBoard.battleBoardGame.skills.TargetPointSkillExample;
 
 public class AnotherUnit extends Unit {
 
@@ -18,7 +18,7 @@ public class AnotherUnit extends Unit {
 
 		image = Assets.unit1;
 
-		skills.add(new SomeSkill());
+		skills.add(new TargetPointSkillExample());
 
 	}
 }

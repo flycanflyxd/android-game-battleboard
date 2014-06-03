@@ -26,7 +26,7 @@ public class NormalState extends BattleState {
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			Unit unitHere = world.getBoard().getBlock(blockPosition).getUnit();
-			if (unitHere != null) {
+			if (unitHere != null && unitHere.getOwner() == world.getUser()) {
 				battleScreen.setState(new DraggingUnitState(battleScreen, screenPosition, unitHere, world.generateValidMoves(unitHere)));
 			}
 		}

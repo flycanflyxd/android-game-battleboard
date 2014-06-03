@@ -54,7 +54,7 @@ public class World {
 		for (Point whichMove : whichUnit.getValidMoves()) {
 			if (ValidBlockPosition(whichMove)) {
 				if (board.isBlockEmpty(whichMove)) {
-					answer.add(new ValidMove(Assets.magic, whichMove.x, whichMove.y));
+					answer.add(new ValidMove(Assets.magic, whichMove));
 				}
 			}
 		}
