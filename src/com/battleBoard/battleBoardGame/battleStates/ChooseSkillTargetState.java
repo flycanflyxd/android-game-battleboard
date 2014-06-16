@@ -37,15 +37,19 @@ public class ChooseSkillTargetState extends BattleState {
 				validTargetTable[whichCol][whichRow] = false;
 			}
 		}
-		
-		if (skill.getCastType() == Skill.CastType.immediate) {
-			battleScreen.setState(new TickingState(battleScreen, new UnitAction(caster, UnitAction.Type.castSkillTargetPoint, caster.getBlockPosition(), skill)));
-		} else {
-			
-			for (Point whichValidPoint : validPoints) {
-				validTargetShadows.add(new ValidMove(Assets.skillTarget, whichValidPoint));
-				validTargetTable[whichValidPoint.x][whichValidPoint.y] = true;
+		if (caster.getOwner().getMp() >= skill.getMpCost()) {
+			if (skill.getCastType() == Skill.CastType.immediate) {
+
+				battleScreen.setState(new TickingState(battleScreen, new UnitAction(caster, UnitAction.Type.castSkillTargetPoint, caster.getBlockPosition(), skill)));
+
+			} else {
+				for (Point whichValidPoint : validPoints) {
+					validTargetShadows.add(new ValidMove(Assets.skillTarget, whichValidPoint));
+					validTargetTable[whichValidPoint.x][whichValidPoint.y] = true;
+				}
 			}
+		} else {
+			battleScreen.setState(new NormalState(battleScreen));
 		}
 	}
 
@@ -73,6 +77,7 @@ public class ChooseSkillTargetState extends BattleState {
 
 		battleScreen.drawPlayerUnits(battleScreen.getWorld().getEnemy());
 		battleScreen.drawPlayerUnits(battleScreen.getWorld().getUser());
+		battleScreen.drawMpBar(world.getUser());
 
 		List<ValidMove> tempValidMoves = new ArrayList<ValidMove>(validTargetShadows);
 		for (ValidMove whichValidMove : tempValidMoves) {

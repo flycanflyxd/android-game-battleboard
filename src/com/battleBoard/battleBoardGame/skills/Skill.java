@@ -59,6 +59,8 @@ public abstract class Skill {
 	}
 	
 	public void doEffect(Unit caster, Point targetPoint, World world) {
+		float palyerMpNow = caster.getOwner().getMp();
+		caster.getOwner().setMp(palyerMpNow - mpCost);
 		if(canTargetEnemy) {
 			for (int whichRow = 0; whichRow < world.getBoard().getHeight(); whichRow++) {
 				for (int whichCol = 0; whichCol < world.getBoard().getWidth(); whichCol++) {
