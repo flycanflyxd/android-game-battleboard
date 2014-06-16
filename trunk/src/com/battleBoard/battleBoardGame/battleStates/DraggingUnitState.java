@@ -75,6 +75,7 @@ public class DraggingUnitState extends BattleState {
 
 		battleScreen.drawPlayerUnits(world.getEnemy());
 		battleScreen.drawPlayerUnits(world.getUser());
+		battleScreen.drawMpBar(world.getUser());
 
 		paint.setAlpha(150);
 		float blockWidth = battleScreen.getBlockWidth();

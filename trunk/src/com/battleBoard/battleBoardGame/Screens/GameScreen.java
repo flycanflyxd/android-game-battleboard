@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 import com.battleBoard.battleBoardGame.Board;
@@ -15,7 +16,6 @@ import com.battleBoard.battleBoardGame.IBattleScreenForFloatText;
 import com.battleBoard.battleBoardGame.Player;
 import com.battleBoard.battleBoardGame.Sprite;
 import com.battleBoard.battleBoardGame.World;
-import com.battleBoard.battleBoardGame.Units.AnotherUnit;
 import com.battleBoard.battleBoardGame.Units.*;
 import com.battleBoard.battleBoardGame.battleStates.BattleState;
 import com.battleBoard.battleBoardGame.battleStates.NormalState;
@@ -32,6 +32,8 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 	private Matrix matrix = new Matrix();
 	private BattleState state;
 	private FloatTextManager floatTextManager;
+	private Paint mpBarPaint = new Paint();
+	private RectF mpBarRectF = new RectF();
 
 	public GameScreen(Game game) {
 		super(game);
@@ -189,6 +191,29 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 		floatTextManager.createFloatText(new FloatText(text, screenPosition));
 	}
 
+	@Override
+	public void drawMpBar(Player player) {
+		Graphics graphics = game.getGraphics();
+		final float width = (float) game.getScreenRect().width();
+		final float screenHeight = game.getScreenRect().height();
+		final float height = screenHeight * 0.03f;
+		final float yOffset = screenHeight * 0.5f + width * 0.52f;
+		mpBarPaint.setStyle(Paint.Style.FILL);
+		mpBarPaint.setColor(Color.BLUE);
+		mpBarRectF.set(0.0f, yOffset, width * (player.getMp() / player.getMpMax()), yOffset + height);
+		graphics.drawRect(mpBarRectF, mpBarPaint);
+		mpBarPaint.setColor(Color.WHITE);
+		mpBarPaint.setStyle(Paint.Style.STROKE);
+		mpBarRectF.set(0.0f, yOffset, width, yOffset + height);
+		graphics.drawRect(mpBarRectF, mpBarPaint);
+		
+		mpBarPaint.setColor(Color.WHITE);
+		mpBarPaint.setTextSize(30);
+		mpBarPaint.setStyle(Paint.Style.FILL);
+		mpBarPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		graphics.drawText("MP  " + String.valueOf(player.getMp()), 0, yOffset + width * 0.04f, mpBarPaint);
+	}
+	
 	@Override
 	public void pause() {
 

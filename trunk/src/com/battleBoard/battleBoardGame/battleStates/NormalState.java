@@ -37,9 +37,11 @@ public class NormalState extends BattleState {
 		graphics.drawBackground(Assets.backgroundImg);
 
 		world.getBoard().draw();
-
+				
 		battleScreen.drawPlayerUnits(world.getEnemy());
 		battleScreen.drawPlayerUnits(world.getUser());
+		
+		battleScreen.drawMpBar(world.getUser());
 	}
 
 	@Override
