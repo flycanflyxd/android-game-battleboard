@@ -16,8 +16,7 @@ import com.battleBoard.battleBoardGame.Player;
 import com.battleBoard.battleBoardGame.Sprite;
 import com.battleBoard.battleBoardGame.World;
 import com.battleBoard.battleBoardGame.Units.AnotherUnit;
-import com.battleBoard.battleBoardGame.Units.SomeUnit;
-import com.battleBoard.battleBoardGame.Units.Unit;
+import com.battleBoard.battleBoardGame.Units.*;
 import com.battleBoard.battleBoardGame.battleStates.BattleState;
 import com.battleBoard.battleBoardGame.battleStates.NormalState;
 import com.battleBoard.framework.Game;
@@ -48,11 +47,19 @@ public class GameScreen extends Screen implements IBattleScreen, IBattleScreenFo
 		Player user = new Player();
 		Player enemy = new Player();
 
-		Unit unit = new SomeUnit(new Point(0, 0), user);
+		Unit unit = new SomeUnit(new Point(1, 0), user);
 		user.addUnit(unit);
 		board.UnitGetIn(unit, unit.getBlockPosition());
 
-		unit = new SomeUnit(new Point(1, 1), user);
+		unit = new Knight(new Point(0, 0), user);
+		user.addUnit(unit);
+		board.UnitGetIn(unit, unit.getBlockPosition());
+		
+		unit = new Cleaner(new Point(0, 1), user);
+		user.addUnit(unit);
+		board.UnitGetIn(unit, unit.getBlockPosition());
+		
+		unit = new Archer(new Point(0, 2), user);
 		user.addUnit(unit);
 		board.UnitGetIn(unit, unit.getBlockPosition());
 

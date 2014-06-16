@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import com.battleBoard.framework.Music;
 
 public class Assets {
-	public static Bitmap menuImg, splashImg, backgroundImg, characterImg, blockImg;
+	public static Bitmap menuImg, splashImg, backgroundImg, characterImg, blockImg, cleanerImg, knightImg, archerImg;
 	public static Bitmap magic;
 	public static Bitmap unit1;
 	public static Bitmap selectCircle;

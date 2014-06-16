@@ -20,6 +20,9 @@ public class LoadingScreen extends Screen {
 		Assets.menuImg = g.newImage("menu.png", ImageFormat.RGB565);
 		Assets.backgroundImg = g.newImage("background.png", ImageFormat.RGB565);
 		Assets.characterImg = g.newImage("character.png", ImageFormat.ARGB4444);
+		Assets.knightImg = g.newImage("knight.png", ImageFormat.ARGB4444);
+		Assets.cleanerImg = g.newImage("cleaner.png", ImageFormat.ARGB4444);
+		Assets.archerImg = g.newImage("archer.png", ImageFormat.ARGB4444);
 		Assets.blockImg = g.newImage("block.png", ImageFormat.ARGB4444);
 		Assets.magic = g.newImage("magic.png", ImageFormat.ARGB4444);
 		Assets.unit1 = g.newImage("unit1.png", ImageFormat.ARGB4444);
