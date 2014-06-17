@@ -13,7 +13,7 @@ public class Assets {
 	public static Music theme;
 
 	public static void load(BattleBoard sampleGame) {
-		theme = sampleGame.getAudio().createMusic("RainyMemory.mp3");
+		theme = sampleGame.getAudio().createMusic("background_music.mp3");
 		theme.setLooping(true);
 		theme.setVolume(0.85f);
 		theme.play();
