@@ -17,8 +17,8 @@ public class LoadingScreen extends Screen {
 	@Override
 	public void update(float deltaTime) {
 		Graphics g = game.getGraphics();
-		Assets.menuImg = g.newImage("menu.png", ImageFormat.RGB565);
-		Assets.backgroundImg = g.newImage("background.png", ImageFormat.RGB565);
+		Assets.menuImg = g.newImage("menu.jpg", ImageFormat.RGB565);
+		Assets.backgroundImg = g.newImage("background.jpg", ImageFormat.RGB565);
 		Assets.characterImg = g.newImage("character.png", ImageFormat.ARGB4444);
 		Assets.knightImg = g.newImage("knight.png", ImageFormat.ARGB4444);
 		Assets.cleanerImg = g.newImage("cleaner.png", ImageFormat.ARGB4444);
